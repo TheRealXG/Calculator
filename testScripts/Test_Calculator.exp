@@ -1,0 +1,40 @@
+#!/usr/bin/expect -f
+
+# Wait enough (forever) until a long-time boot
+set timeout -1
+set val_1 [lindex $argv 0]
+set val_2 [lindex $argv 1]
+set output [lindex $argv 2]
+set failMsg "\n\nTest Fail: \n\r"
+set passMsg "\n\nTest Pass: \n\r"
+
+# Start the guest VM
+spawn qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe
+
+# Save output to this log file
+log_file -noappend test_calculator.log
+
+# Wait for the prompt to enter values to sum
+expect "Enter 1st Value*"
+send $val_1\n
+
+# The caluclator will return "Invalid Number" for a bad input which should print a Fail message
+expect {
+	"Enter 2nd Value*" {send $val_2\n}
+
+	"Invalid Number" {puts $failMsg; exit}
+}
+
+
+expect {
+	"Final Output: $output" { puts $passMsg }
+
+    "Final Output: ?" { puts $failMsg }
+
+    "Invalid Number" { puts $failMsg }
+}
+
+expect eof
+exit
+
+

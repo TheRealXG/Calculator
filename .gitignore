@@ -20,6 +20,8 @@ build
 *.ilk
 *.map
 *.exp
+# Allow Expect script files
+!testScripts/*
 
 # Precompiled Headers
 *.gch
