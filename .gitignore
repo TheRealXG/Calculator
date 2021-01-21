@@ -1,3 +1,11 @@
+# Log files
+*.log
+
+#WAF files
+.lock*
+build
+
+
 # Prerequisites
 *.d
 
