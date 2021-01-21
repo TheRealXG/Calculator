@@ -21,7 +21,7 @@ rtems_task Init(
     printf("Display Output: %s\n", outC.outputDisplay);
 
     int val_1, val_2;
-    printf("Enter 1st Value, a whole number between 0 and 9:\n");
+    printf("Enter 1st Value, a whole number between 0 & 9:\n");
     scanf("%d", &val_1);
     
     switch(val_1) 
@@ -70,7 +70,7 @@ rtems_task Init(
     root_Calc(&inC, &outC);
     printf("Display Output: %s\n", outC.outputDisplay);
 
-    printf("Enter 2nd Value, a whole number between 0 and 9:\n");
+    printf("Enter 2nd Value, a whole number between 0 & 9:\n");
     scanf("%d", &val_2);
     
     switch(val_2) 

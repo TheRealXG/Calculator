@@ -40,7 +40,7 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 
 
 
-# Build and Test
+# Build and Run
 1.	In the Git Repo main directory ($GIT_REPO), execute the following:  
 	`./waf configure --rtems=$HOME/quick-start/rtems/5 --rtems-bsp=arm/realview_pbx_a9_qemu`  
 2.	Then compile with:  
@@ -51,6 +51,14 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 	`export QEMU_AUDIO_DRV="none"`  
 
 	`qemu-system-arm -net none -no-reboot -nographic -M realview-pbx-a9 -m 256M -kernel $GIT_REPO/build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe`
+
+# Test
+1. To run a simple Expect script execute  
+	`./testScripts/Test_Calculator.exp 1 2 3`  
+	This will execute the Calculator in QEMU, it will provide 1 and 2 as inputs and expect 3 as the output. It will print "Test Pass:" to the screen
+2. For a test failure, execute  
+	`./testScripts/Test_Calculator.exp 1 2 4`  
+	This will execute the Calculator but expect 4 instead of 3 and print "Test Fail:" to the screen
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 

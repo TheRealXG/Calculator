@@ -4,6 +4,7 @@
 #WAF files
 .lock*
 build
+.waf*/
 
 
 # Prerequisites
