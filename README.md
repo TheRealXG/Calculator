@@ -7,8 +7,7 @@ This example is how to build a simple Calculator Example (source provided) and r
 
 This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/user/start/index.html#) as a basis:
 1. First install QEMU, this can be done from the terminal with: 
-	a. 'sudo apt-get install qemu-system '
-
+	a. `sudo apt-get install qemu-system`
 
 
 # Build and Test
