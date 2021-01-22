@@ -22,16 +22,16 @@ send $val_1\n
 expect {
 	"Enter 2nd Value*" {send $val_2\n}
 
-	"Invalid Number" {puts $failMsg; exit}
+	"Invalid Number" {puts $failMsg; send_log $failMsg; exit}
 }
 
 
 expect {
-	"Final Output: $output" { puts $passMsg }
+	"Final Output: $output" { puts $passMsg; send_log $passMsg}
 
-    "Final Output: ?" { puts $failMsg }
+    "Final Output: ?" { puts $failMsg; send_log $failMsg }
 
-    "Invalid Number" { puts $failMsg }
+    "Invalid Number" { puts $failMsg; send_log $failMsg }
 }
 
 expect eof
