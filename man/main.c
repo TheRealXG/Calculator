@@ -117,7 +117,7 @@ rtems_task Init(
     printf("Press =\n");
     inC.keyEvent = KEY_12_EQUALS_Calc;
     root_Calc(&inC, &outC);
-    printf("Final Output: %s\n", outC.outputDisplay);
+    printf("Final Output: %s.\n", outC.outputDisplay);
 
 	exit( 0 );    
 }

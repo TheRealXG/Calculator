@@ -1,7 +1,7 @@
 #!/usr/bin/expect -f
 
 # Wait enough (forever) until a long-time boot
-set timeout -1
+set timeout 10
 set val_1 [lindex $argv 0]
 set val_2 [lindex $argv 1]
 set output [lindex $argv 2]
@@ -25,16 +25,10 @@ expect {
 	"Invalid Number" {puts $failMsg; send_log $failMsg; exit}
 }
 
-
 expect {
-	"Final Output: $output" { puts $passMsg; send_log $passMsg}
+	"Final Output: $output." {puts $passMsg; send_log $passMsg }
 
-    "Final Output: ?" { puts $failMsg; send_log $failMsg }
-
-    "Invalid Number" { puts $failMsg; send_log $failMsg }
+	eof { puts $failMsg; send_log $failMsg; exit}
 }
-
-expect eof
-exit
 
 
