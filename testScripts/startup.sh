@@ -12,7 +12,7 @@ cd /volume
 
 #Make expect script executable then run it with some default settings as of now
 chmod +x /volume/testScripts/Test_Calculator.exp
-/volume/testScripts/Test_Calculator.exp 5 5 10
+/volume/testScripts/Test_Calculator.exp 9 - 5 4
 
 #debug statements
 echo "Startup.sh script was ran." >> /volume/log.txt
