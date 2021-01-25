@@ -21,6 +21,7 @@ rtems_task Init(
     printf("Display Output: %s\n", outC.outputDisplay);
 
     int val_1, val_2;
+    char operator;
     printf("Enter 1st Value, a whole number between 0 & 9:\n");
     scanf("%d", &val_1);
     
@@ -66,7 +67,29 @@ rtems_task Init(
 
     /* + */
     printf("Press +\n");
-    inC.keyEvent = KEY_13_PLUS_Calc;
+
+    printf("Enter an Operator (+, -, *, /):");
+    scanf(" %c", &operator);
+    switch(operator)
+    {
+        case '+':
+            inC.keyEvent = KEY_13_PLUS_Calc;
+            break;
+        case '-':
+            inC.keyEvent = KEY_14_MINUS_Calc;
+            break;
+        case '*':
+            inC.keyEvent = KEY_15_TIMES_Calc;
+            break;
+        case '/':
+            inC.keyEvent = KEY_16_DIVIDE_Calc;
+            break;
+        default:
+            printf("Invalid Operator\n");
+            exit ( 0 );
+
+    }
+
     root_Calc(&inC, &outC);
     printf("Display Output: %s\n", outC.outputDisplay);
 
