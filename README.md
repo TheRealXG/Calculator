@@ -54,11 +54,15 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 
 # Test
 1. To run a simple Expect script execute  
-	`./testScripts/Test_Calculator.exp 1 2 3`  
-	This will execute the Calculator in QEMU, it will provide 1 and 2 as inputs and expect 3 as the output. It will print "Test Pass:" to the screen
+	`./testScripts/Test_Calculator.exp 1 + 2 3`  
+	This will execute the Calculator in QEMU, it will provide 1 and 2 as inputs and add them and expect 3 as the output. It will print "Test Pass:" to the screen
 2. For a test failure, execute  
-	`./testScripts/Test_Calculator.exp 1 2 4`  
+	`./testScripts/Test_Calculator.exp 1 + 2 4`  
 	This will execute the Calculator but expect 4 instead of 3 and print "Test Fail:" to the screen
+3. To test other operators, sometimes the argument must be escaped:  
+	`./testScripts/Test_Calculator.exp 3 \- 1 2`  
+	`./testScripts/Test_Calculator.exp 3 \* 2 6`  
+	`./testScripts/Test_Calculator.exp 4 \ 2 2` (Note: Known bug application actually multiplies instead of dividing)
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 

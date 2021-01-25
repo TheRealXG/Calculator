@@ -65,10 +65,7 @@ rtems_task Init(
     root_Calc(&inC, &outC);
     printf("Display Output: %s\n", outC.outputDisplay);
 
-    /* + */
-    printf("Press +\n");
-
-    printf("Enter an Operator (+, -, *, /):");
+    printf("Enter an Operator (+, -, *, /):\n");
     scanf(" %c", &operator);
     switch(operator)
     {

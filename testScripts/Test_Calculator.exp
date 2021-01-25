@@ -3,10 +3,11 @@
 # Wait enough (forever) until a long-time boot
 set timeout 10
 set val_1 [lindex $argv 0]
-set val_2 [lindex $argv 1]
-set output [lindex $argv 2]
-set failMsg "\n\nTest Fail: \n\r"
-set passMsg "\n\nTest Pass: \n\r"
+set operator [lindex $argv 1]
+set val_2 [lindex $argv 2]
+set output [lindex $argv 3]
+set failMsg "\n\nTest Fail \n\r"
+set passMsg "\n\nTest Pass \n\r"
 
 # Start the guest VM
 spawn qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe
@@ -18,11 +19,19 @@ log_file -noappend test_calculator.log
 expect "Enter 1st Value*"
 send $val_1\n
 
-# The caluclator will return "Invalid Number" for a bad input which should print a Fail message
+# The calculator will return "Invalid Number" for a bad input which should print a Fail message
+expect {
+	"Enter an Operator*" {send $operator\n}
+
+	"Invalid Number" {send_user $failMsg; exit}
+}
+
+
+# The calculator will return "Invalid Operator" for a bad input which should print a Fail message
 expect {
 	"Enter 2nd Value*" {send $val_2\n}
 
-	"Invalid Number" {send_user; exit}
+	"Invalid Operator" {send_user $failMsg; exit}
 }
 
 expect {
