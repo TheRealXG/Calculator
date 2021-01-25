@@ -59,8 +59,8 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 2. For a test failure, execute  
 	`./testScripts/Test_Calculator.exp 1 + 2 4`  
 	This will execute the Calculator but expect 4 instead of 3 and print "Test Fail:" to the screen
-3. To test other operators, sometimes the argument must be escaped:  
-	`./testScripts/Test_Calculator.exp 3 \- 1 2`  
+3. Test other operators (sometimes the argument must be escaped):  
+	`./testScripts/Test_Calculator.exp 3 - 1 2`  
 	`./testScripts/Test_Calculator.exp 3 \* 2 6`  
 	`./testScripts/Test_Calculator.exp 4 \ 2 2` (Note: Known bug application actually multiplies instead of dividing)
 

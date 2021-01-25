@@ -9,6 +9,12 @@ set output [lindex $argv 3]
 set failMsg "\n\nTest Fail \n\r"
 set passMsg "\n\nTest Pass \n\r"
 
+if { $operator == "./-"} {
+	puts "MINUS!"
+} else {
+	puts "NOT!"
+}
+
 # Start the guest VM
 spawn qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe
 
@@ -21,7 +27,14 @@ send $val_1\n
 
 # The calculator will return "Invalid Number" for a bad input which should print a Fail message
 expect {
-	"Enter an Operator*" {send $operator\n}
+	"Enter an Operator*" {
+		#Extra logic to handle "-" due to Expect treating it as an argument
+		if { $operator == "./-"} {
+			send -- "-\n"
+		} else {
+			send $operator\n
+		}
+	}
 
 	"Invalid Number" {send_user $failMsg; exit}
 }
