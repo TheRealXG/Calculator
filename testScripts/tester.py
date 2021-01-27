@@ -6,11 +6,11 @@ from random import seed
 from random import randint
 import xml.etree.ElementTree as ET
 
-# Set to constant for testing purposes
+# Uncomment below to set to constant for testing purposes
 #seed(1)
 
 # define your test params
-numRandTests = 5
+numRandTests = 15
 maxFailedTestsAllowed = 2
 addedIntegerMax = 9
 addedIntegerMin = 0
@@ -121,13 +121,26 @@ def runRandTests():
 		secondInt = randint(addedIntegerMin, addedIntegerMax)
 		op_sel = randint(0,3)
 
-		outputs = [firstInt + secondInt,
-					firstInt - secondInt,
-					firstInt * secondInt,
-					firstInt / secondInt]
+		# Exception handling to prevent divide by 0 errors. Calculator doesn't work correctly with division right now so what is substituted doesn't matter right now.
+		try: 
+			outputs = [firstInt + secondInt,
+						firstInt - secondInt,
+						firstInt * secondInt,
+						firstInt / secondInt]
+		except ZeroDivisionError:
+			outputs = [firstInt + secondInt,
+						firstInt - secondInt,
+						firstInt * secondInt,
+						"N/A"]
 
-		#operator = print (random.choice(ops))
-		os.system("./" + expScriptName + ".exp " + str(firstInt) + " " + str(ops[op_sel]) + " " + str(secondInt) + " " + str(outputs[op_sel] * failure) + " " + str(i))
+		testInput = str(firstInt) + " " + str(ops[op_sel]) + " " + str(secondInt)
+		testOutput = str(outputs[op_sel] * failure)
+		
+		testList.append(ET.SubElement(testsuite,'testcase'))
+		testList[i].set('classname','Calc')
+		testList[i].set('name',testInput + ' = ' + testOutput + ':  ' + failureList[i])
+
+		os.system("./" + expScriptName + ".exp " + testInput + " " + testOutput + " " + str(i))
 
 
 # check test output
@@ -159,26 +172,18 @@ def aggregateResults(numTestsRun):
 
 	return [numTestsPassed, numTestsFailed]			
 
+# Add a filure element to the XML Tree for JUnit outputs at the test # listed
 def setFailure(testNum):
 	failElement = ET.SubElement(testList[testNum], 'failure')
 	failElement.set('type','Mis-Math')
 	failElement.text = 'Output Not As Expected'
 
+# Write the results out as a JUnit formatted XMl file
 def outputResults_junit(numTestsRun):
 	testsuite.set('tests', str(numTestsRun))
-	
-
-#	testcase3 = ET.SubElement(testsuite, 'testcase')
-
-#	testcase3.set('classname','Calc')
-#	testcase3.set('name','1 + 4 = 6')
-#	failure3 = ET.SubElement(testcase3, 'failure')
-#	failure3.set('type','Mis-Math')
-#	failure3.text = 'Output Not As Expected'
 
 	tree = ET.ElementTree(testsuite)
-	tree.write("results.xml")
-	#tree.close				
+	tree.write("results.xml")			
 				
 # output results				
 def outputResults(numTestsPassed, numTestsFailed):
