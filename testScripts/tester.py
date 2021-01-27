@@ -1,16 +1,19 @@
 import os
 import sys
 import argparse
+import random
 from random import seed
 from random import randint
 
-seed(1)
+# Set to constant for testing purposes
+#seed(1)
 
 # define your test params
-numRandTests = 1
-maxFailedTestsAllowed = 2;
+numRandTests = 5
+maxFailedTestsAllowed = 2
 addedIntegerMax = 9
 addedIntegerMin = 0
+ops = ['+', '-', '\*', '/']
 expScriptName = "testScripts/Test_Calculator"
 logDir = "logs"
 logName = "test_calculator"
@@ -93,11 +96,23 @@ def runRandTests():
 			failure = 2
 		else:
 			failure = 1
-		failureList.append(failure)
+		# This will set the expected test output to always match the values
+		if failure == 2:
+			failureList.append("F")
+		else:
+			failureList.append("P")
 		
 		firstInt = randint(addedIntegerMin, addedIntegerMax)
 		secondInt = randint(addedIntegerMin, addedIntegerMax)
-		os.system("./" + expScriptName + ".exp " + str(firstInt) + " " + str(secondInt) + " " + str((firstInt + secondInt) * failure) + " " + str(i))
+		op_sel = randint(0,3)
+
+		outputs = [firstInt + secondInt,
+					firstInt - secondInt,
+					firstInt * secondInt,
+					firstInt / secondInt]
+
+		#operator = print (random.choice(ops))
+		os.system("./" + expScriptName + ".exp " + str(firstInt) + " " + str(ops[op_sel]) + " " + str(secondInt) + " " + str(outputs[op_sel] * failure) + " " + str(i))
 
 
 # check test output
