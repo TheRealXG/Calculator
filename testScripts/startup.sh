@@ -12,7 +12,8 @@ cd /volume
 
 #Make expect script executable then run it with some default settings as of now
 chmod +x /volume/testScripts/Test_Calculator.exp
-python3 testScripts/tester.py testScripts/inputs.txt
+python3 testScripts/tester.py
+#testScripts/inputs.txt
 
 #debug statements
 echo "Startup.sh script was ran." >> /volume/log.txt
