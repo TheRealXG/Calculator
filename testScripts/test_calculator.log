@@ -1,0 +1,9 @@
+Failed to initialize module: /usr/lib/x86_64-linux-gnu/qemu/audio-pa.so
+Note: only modules from the same build can be loaded.
+Failed to initialize module: /usr/lib/x86_64-linux-gnu/qemu/audio-pa.so
+Note: only modules from the same build can be loaded.
+qemu-system-arm: could not load kernel 'build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe'
+send: spawn id exp4 not open
+    while executing
+"send $val_1\n"
+    (file "./Test_Calculator.exp" line 19)
