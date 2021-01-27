@@ -4,6 +4,7 @@ import argparse
 import random
 from random import seed
 from random import randint
+import xml.etree.ElementTree as ET
 
 # Set to constant for testing purposes
 #seed(1)
@@ -25,10 +26,15 @@ failMessage = "Test Fail"
 firstInt = 0
 secondInt = 0
 failure = 1
+# List of the values passed into the test
+testList = []
 failureList = []
 resultsList = []
 numTestsPassed = 0
 numTestsFailed = 0
+
+#Create XML tree for JUnit output
+testsuite = ET.Element('testsuite')
 
 resultsLine = ""
 
@@ -56,6 +62,8 @@ def main():
 	numPassedFailed = aggregateResults(numTestsRun)
 	outputResults(numPassedFailed[0], numPassedFailed[1])	
 	
+	outputResults_junit(numTestsRun)
+
 	if (numTestsFailed > maxFailedTestsAllowed):
 		sys.exit(1)
 	else:
@@ -82,7 +90,14 @@ def runInputTests(inputFileName):
 				total = inputs[3]
 				failureList.append(inputs[4])
 				
-				os.system("./" + expScriptName + ".exp " + str(firstInt) + " " + str(operator) + " " + str(secondInt) + " " + str(total) + " " + str(testCtr))
+				testInput = str(firstInt) + " " + str(operator) + " " + str(secondInt)
+				testOutput = str(total)
+				
+				testList.append(ET.SubElement(testsuite,'testcase'))
+				testList[testCtr].set('classname','Calc')
+				testList[testCtr].set('name',testInput + ' = ' + testOutput + ':  ' + inputs[4])
+
+				os.system("./" + expScriptName + ".exp " + testInput + " " + testOutput + " " + str(testCtr))
 				
 				testCtr += 1
 				
@@ -133,15 +148,37 @@ def aggregateResults(numTestsRun):
 			if (failureList[i].lower() == 'p' and resultsLine != passMessage):
 				numTestsFailed += 1;
 				resultsList.append("Test " + str(i+1) + ": Failed")
+				setFailure(i)
 			if (failureList[i].lower() == 'f' and resultsLine == failMessage):
 				numTestsPassed += 1;
 				resultsList.append("Test " + str(i+1) + ": Passed")
 			if (failureList[i].lower() == 'f' and resultsLine != failMessage):
 				numTestsFailed += 1;
 				resultsList.append("Test " + str(i+1) + ": Failed")
-				
+				setFailure(i)
+
 	return [numTestsPassed, numTestsFailed]			
-				
+
+def setFailure(testNum):
+	failElement = ET.SubElement(testList[testNum], 'failure')
+	failElement.set('type','Mis-Math')
+	failElement.text = 'Output Not As Expected'
+
+def outputResults_junit(numTestsRun):
+	testsuite.set('tests', str(numTestsRun))
+	
+
+#	testcase3 = ET.SubElement(testsuite, 'testcase')
+
+#	testcase3.set('classname','Calc')
+#	testcase3.set('name','1 + 4 = 6')
+#	failure3 = ET.SubElement(testcase3, 'failure')
+#	failure3.set('type','Mis-Math')
+#	failure3.text = 'Output Not As Expected'
+
+	tree = ET.ElementTree(testsuite)
+	tree.write("results.xml")
+	#tree.close				
 				
 # output results				
 def outputResults(numTestsPassed, numTestsFailed):
@@ -158,7 +195,7 @@ def outputResults(numTestsPassed, numTestsFailed):
 	for i in range (len(resultsList)):
 		resultFile.write(resultsList[i] + "\n")
 	resultFile.close()
-	
+
 	
 if __name__ == "__main__":
     main()	

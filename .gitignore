@@ -1,6 +1,7 @@
 # Log files
 *.log
 results.txt
+*.xml
 
 #WAF files
 .lock*
