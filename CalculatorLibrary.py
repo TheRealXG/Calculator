@@ -7,9 +7,8 @@ class CalculatorLibrary(object):
 
     Interacts with the calculator directly using its ``push`` method.
     """
-    prompt_val = "Enter Value"
-    prompt_op = "Enter an Operator"
-    prompt_result = "Final Output"
+    prompt = "Press Button"
+    prompt_display = "Display Output"
 
     def __init__(self):
         qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe")
@@ -22,13 +21,13 @@ class CalculatorLibrary(object):
         self._result = ''
 
 
-    def enter_value(self, value):
+    def press_button(self, value):
         """Enters the value to be operated on in the calculator"""
         wait_for_prompt = True
         while wait_for_prompt:
             output = self.process.stdout.readline()
-            
-            if self.prompt_val in output:
+
+            if self.prompt in output:
                 print(output.strip())
                 self.process.stdin.write(value + "\n")
                 wait_for_prompt = False
@@ -38,43 +37,32 @@ class CalculatorLibrary(object):
                 if return_code is not None:
                     break
 
-    def enter_operator(self, operator):
-        """Enters the operator to use in the calculator"""
+    def press_buttons(self, values):
+        for value in values.replace(' ', ''):
+            self.press_button(value)
+
+    def result_should_be(self, expected):
+        """Verifies that the current prompt_display is ``expected``.
+        """
+        self.process.stdin.close()
         wait_for_prompt = True
         while wait_for_prompt:
             output = self.process.stdout.readline()
-            
-            if self.prompt_op in output:
-                print(output.strip())
-                self.process.stdin.write(operator + "\n")
-                wait_for_prompt = False
-            else:
-                print(output.strip())
-                return_code = self.process.poll()
-                if return_code is not None:
-                    break
 
-    def result_should_be(self, expected):
-        """Verifies that the current prompt_result is ``expected``.
-        """
-        self.process.stdin.close()
-        # Process has finished, read rest of the output 
-        for output in self.process.stdout.readlines():
-            print(output.strip())
-            if self.prompt_result in output:
+            if self.prompt_display in output:
+                print(output.strip())
                 # Parse output on spaces to get final entry in line
                 output_parsed = output.split()
                 # Get last element in list and remove "." from end
-                self._result = str(output_parsed[-1][:-1])
+                self._result = str(output_parsed[-1])
                 # Compare if the value is as expected, if not raise an error
                 if expected == self._result:
                     return self._result
-                else:
+                else:   
                     raise AssertionError('%s != %s' % (self._result, expected))
             else:
                 print(output.strip())
-        # Reached the end of the output without finding output. Raise error
-        raise AssertionError("End of Script reached with no Final Output")
+
 
     def should_cause_error(self, expression):
         """Verifies that calculating the given ``expression`` causes an error.

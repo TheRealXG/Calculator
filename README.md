@@ -59,7 +59,7 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 	`pip install docutils`  
 2. In the main Calculator folder execute  
 	`robot keyword_driven.robot`  
-	This will run 4 basic test cases and report the results to the command line. Test details can be viewed by opening `log.html`  
+	This will run 7 basic test cases (4P/3F) and report the results to the command line. Test details can be viewed by opening `log.html`  
 3. More tests and development is in work on this testing framework
 
 # Contribute

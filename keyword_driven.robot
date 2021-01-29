@@ -14,51 +14,50 @@ Library           CalculatorLibrary.py
 
 *** Test Cases ***
 Add 2 Values
-    Enter Value     1
-    Enter Operator  +
-    Enter Value     2
+    Press Button    1
+    Press button    +
+    Press Button    2
+    Press Button    =
     Result should be    3
 
+Add Decimals
+    Press Button    2
+    Press Button    .
+    Press Button    3
+    Press Button    +
+    Press Button    2
+    Press Button    .
+    Press Button    9
+    Press Button    =
+    Result should be    5.2
+
 Subtract 2 Values
-    Enter Value     5
-    Enter Operator  -
-    Enter Value     1
+    Press Button    5
+    Press Button    -
+    Press Button    1
+    Press Button    =
     Result should be    4
 
 Multiply 2 Values
-    Enter Value     5
-    Enter Operator  *
-    Enter Value     2
+    Press Button    5
+    Press Button    *
+    Press Button    2
+    Press Button    =
     Result should be    10
 
 Divide 2 Values
-    Enter Value     6
-    Enter Operator  /
-    Enter Value     2
-    Result should be
-
-*** comment ***
-Push button
-    Push button    1
-    Result should be    1
-
-Push multiple buttons
-    Push button    1
-    Push button    2
-    Result should be    12
-
-Simple calculation
-    Push button    1
-    Push button    +
-    Push button    2
-    Push button    =
-    Result should be    3
-
-Longer calculation
-    Push buttons    5 + 4 - 3 * 2 / 1 =
+    Press Button    6
+    Press Button    /
+    Press Button    2
+    Press Button    =
     Result should be    3
 
 Clear
-    Push button    1
-    Push button    C
-    Result should be    ${EMPTY}    # ${EMPTY} is a built-in variable
+    Press Button    1
+    Press Button    C
+    Result should be    0
+
+Longer calculation
+    Press Buttons    5 + 4 - 3 * 2 / 1 =
+    Result should be    3
+
