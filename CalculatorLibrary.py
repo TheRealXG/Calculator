@@ -9,6 +9,7 @@ class CalculatorLibrary(object):
     """
     prompt = "Press Button"
     prompt_display = "Display Output"
+    bad_input = "Invalid Input"
 
     def __init__(self):
         qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe")
@@ -64,6 +65,7 @@ class CalculatorLibrary(object):
                 print(output.strip())
 
 
+# TODO to update
     def should_cause_error(self, expression):
         """Verifies that calculating the given ``expression`` causes an error.
 
