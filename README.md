@@ -53,21 +53,14 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 	`qemu-system-arm -net none -no-reboot -nographic -M realview-pbx-a9 -m 256M -kernel $GIT_REPO/build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe`
 
 # Test
-1. To run a simple Expect script execute  
-	`./testScripts/Test_Calculator.exp 1 + 2 3 1`  
-	This will execute the Calculator in QEMU, it will provide 1 and 2 as inputs and add them and expect 3 as the output. "1" at the end is the run number. It will print "Test Pass:" to the screen
-2. For a test failure, execute  
-	`./testScripts/Test_Calculator.exp 1 + 2 4 1`  
-	This will execute the Calculator but expect 4 instead of 3 and print "Test Fail:" to the screen
-3. Test other operators (sometimes the argument must be escaped):  
-	`./testScripts/Test_Calculator.exp 3 - 1 2 1`  
-	`./testScripts/Test_Calculator.exp 3 \* 2 6 1`  
-	`./testScripts/Test_Calculator.exp 4 \ 2 2 1` (Note: Known bug application actually multiplies instead of dividing)
-4. To run a set of random tests, execute  
-	`python3 testScripts/tester.py`  
-	Or to provide a set of static inputs:  
-	`python3 testScripts/tester.py testScripts/inputs.txt`  
-	These will place logs files from each run in the `logs` folder and tallied results in `results.txt` and `results.xml`.
+1. This branch is setup to use the Robot Test Framework for testing which first needs installed  
+	(Assuming Python 3 is already installed)  
+	`pip install robotframework`  
+	`pip install docutils`  
+2. In the main Calculator folder execute  
+	`robot keyword_driven.robot`  
+	This will run 4 basic test cases and report the results to the command line. Test details can be viewed by opening `log.html`  
+3. More tests and development is in work on this testing framework
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
