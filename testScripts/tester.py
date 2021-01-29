@@ -97,8 +97,10 @@ def runInputTests(inputFileName):
 				testList[testCtr].set('classname','Calc')
 				testList[testCtr].set('name',testInput + ' = ' + testOutput + ':  ' + inputs[4])
 
-				os.system("./" + expScriptName + ".exp " + testInput + " " + testOutput + " " + str(testCtr))
-				
+				os.system("python3 " + expScriptName + ".py " + testInput + " " + testOutput + " " + str(testCtr))
+				# Use the following line for the Expect script to run QEMU
+				#os.system("./" + expScriptName + ".exp " + testInput + " " + testOutput + " " + str(testCtr))
+
 				testCtr += 1
 				
 	return testCtr
@@ -138,9 +140,11 @@ def runRandTests():
 		
 		testList.append(ET.SubElement(testsuite,'testcase'))
 		testList[i].set('classname','Calc')
-		testList[i].set('name',testInput + ' = ' + testOutput + ':  ' + failureList[i])
+		testList[i].set('name',"Test " + str(i) + ": " + testInput + ' = ' + testOutput + ':  ' + failureList[i])
 
-		os.system("./" + expScriptName + ".exp " + testInput + " " + testOutput + " " + str(i))
+		os.system("python3 " + expScriptName + ".py " + testInput + " " + testOutput + " " + str(i))
+		# Use the following line for the Expect script to run QEMU
+		# os.system("./" + expScriptName + ".exp " + testInput + " " + testOutput + " " + str(i))
 
 
 # check test output
