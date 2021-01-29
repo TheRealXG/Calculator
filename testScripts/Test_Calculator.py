@@ -21,6 +21,8 @@ test_pass = False
 log_name = logDir + "/" + logName + sys.argv[5] + logExt
 if os.path.exists(log_name):
     os.remove(log_name)
+if not os.path.exists(logDir):
+        os.makedirs(logDir)
 file = open(log_name, 'a')
 
 process = subprocess.Popen(qemu_cmd,
@@ -62,6 +64,7 @@ while True:
         # Process has finished, read rest of the output 
         for output in process.stdout.readlines():
             print(output.strip())
+            file.write(output)
         # Print results of test
         if test_pass:
             print(passMsg)
@@ -75,6 +78,3 @@ while True:
 process.stdin.close()
 # Close file
 file.close
-
-
-
