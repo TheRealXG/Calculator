@@ -70,7 +70,7 @@ class CalculatorLibrary(object):
                 # Get last element in list and remove "." from end
                 self._result = str(output_parsed[-1])
                 # Compare if the value is as expected, if not raise an error
-                if expected == self._result:
+                if str(expected) == self._result:
                     return self._result
                 else:   
                     raise AssertionError('%s != %s' % (self._result, expected))
@@ -80,7 +80,6 @@ class CalculatorLibrary(object):
                 raise AssertionError('Bad Input')
             else:
                 print(output.strip())
-
 
     def should_cause_error(self, expression):
         """Verifies that calculating the given ``expression`` causes an error.
