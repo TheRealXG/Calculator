@@ -10,23 +10,23 @@ Documentation     Example test cases using the keyword-driven testing approach.
 ...               if also business people need to understand tests. If the
 ...               same workflow needs to repeated multiple times, it is best
 ...               to use to the _data-driven_ approach.
-Library             CalculatorLibrary.py
-Library             String
-Test Setup          Start Process
-Test Teardown       Close Streams
+Library           CalculatorLibrary.py
+Library           String
+Test Setup        Start Process
+Test Teardown     Close Streams
 
 *** Test Cases ***
 2 Digit Random Values
-  ${val_1} =  Generate Random String  2  [NUMBERS]
-  ${op} =  Generate Random String  1  +-*/
-  ${val_2} =  Generate Random String  2  [NUMBERS]
-  ${result} =  Calculate Expected Result  ${val_1}  ${op}  ${val_2}
-  Log  ${val_1}${op}${val_2}=${result}'
-  Press Buttons     ${val_1}${op}${val_2}=
-  Result should be  ${result}
+    ${val_1} =    Generate Random String    2    [NUMBERS]
+    ${op} =    Generate Random String    1    +-*/
+    ${val_2} =    Generate Random String    2    [NUMBERS]
+    ${result} =    Calculate Expected Result    ${val_1}    ${op}    ${val_2}
+    Log    ${val_1}${op}${val_2}=${result}'
+    Press Buttons    ${val_1}${op}${val_2}=
+    Result should be    ${result}
 
 2 Digit Random Values Repeated, No /
-  Repeat Keyword   5 times  Calculate with Random Values  2  2
+    Repeat Keyword    5 times    Calculate with Random Values    2    2
 
 Add 2 Values
     Press Button    1
@@ -78,20 +78,19 @@ Longer calculation
 
 *** Keywords ***
 Calculate with Random Values
-  [Arguments]   ${num_digits_1}   ${num_digits_2}
-  ${val_1} =  Generate Random String  2  [NUMBERS]
-  ${op} =  Generate Random String  1  +-*
-  ${val_2} =  Generate Random String  2  [NUMBERS]
-  ${result} =  Calculate Expected Result  ${val_1}  ${op}  ${val_2}
-  Log  ${val_1}${op}${val_2}=${result}'
-  Press Buttons     ${val_1}${op}${val_2}=
-  Result should be  ${result}
-  [Return]  ${result}
+    [Arguments]    ${num_digits_1}    ${num_digits_2}
+    ${val_1} =    Generate Random String    2    [NUMBERS]
+    ${op} =    Generate Random String    1    +-*
+    ${val_2} =    Generate Random String    2    [NUMBERS]
+    ${result} =    Calculate Expected Result    ${val_1}    ${op}    ${val_2}
+    Log    ${val_1}${op}${val_2}=${result}'
+    Press Buttons    ${val_1}${op}${val_2}=
+    Result should be    ${result}
+    [Return]    ${result}
 
 Calculate Expected Result
-  [Arguments]  ${value_1}  ${op}  ${value_2}
-  ${value_1} =  Convert To Integer     ${value_1}
-  ${value_2} =  Convert To Integer     ${value_2}
-  ${expected} =  evaluate  (${value_1} ${op} ${value_2})
-  [Return]  ${expected}
-
+    [Arguments]    ${value_1}    ${op}    ${value_2}
+    ${value_1} =    Convert To Integer    ${value_1}
+    ${value_2} =    Convert To Integer    ${value_2}
+    ${expected} =    evaluate    (${value_1} ${op} ${value_2})
+    [Return]    ${expected}

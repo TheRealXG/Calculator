@@ -67,10 +67,16 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 	`robot testScripts/data_driver.robot`  
 	This will execute a test that reads in a CSV of expressions to test `data_driver.csv`  
 	Expressions can be entered on a new line with the first entry being the input expression then the expected output.  
-5. More tests and development is in work on this testing framework
+5. To generate XUnit XML output in results.xml, run  
+	`robot --xunit results testScripts/.`
+6. More tests and development is in work on this testing framework
 
 # Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+TODO: Explain how other users and developers can contribute to make your code better.  
+To generate Robot Custom Library documentation:  
+	`python3 -m robot.libdoc testScripts/CalculatorLibrary.py Calc_Lib.html`  
+To generate HTML documentation on Test Cases:  
+	`python3 -m robot.testdoc testScripts/*.robot test_Doc.html`
 
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
 - [ASP.NET Core](https://github.com/aspnet/Home)

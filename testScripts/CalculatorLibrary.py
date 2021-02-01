@@ -2,20 +2,22 @@ import shlex
 import subprocess
 
 class CalculatorLibrary(object):
-    """Test library for testing *Calculator* App.
+    """Library for testing the Ansys *Calculator* App running in QEMU.
+
+    This library interacts with the Console running QEMU to provide input, "Press Buttons" and read output to verify functionality.
     """
     prompt = "Press Button"
     prompt_display = "Display Output"
     bad_input = "Invalid Input"
 
     def __init__(self):
-        """Method run at instantiation of Python object.
+        """Method run at instantiation of Python object, simply initializes results to ''
         """
         self._result = ''
 
 
     def start_process(self):
-        """Setup method to start QEMU process. Could use ___init___ in this case, but testing Setup test case function
+        """Setup method to start QEMU process.
         """
         qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe")
         self.process= subprocess.Popen(qemu_cmd,
@@ -27,13 +29,18 @@ class CalculatorLibrary(object):
         self._result = ''
 
     def close_Streams(self):
-        """Ensure QEMU is quit and not left as a zombie process. Close STDIN sream
+        """Teardown method to ensure QEMU is quit and not left as a zombie process. Close STDIN stream.
         """
         self.press_button("q")
         self.process.stdin.close()
 
     def press_button(self, value):
-        """Enters the value or operator to the calculator"""
+        """Enters the value or operator, passed in, to the calculator.
+
+        Examples:
+        | Press Button | 1 |
+        | Press Button | + |
+        """
         wait_for_prompt = True
         while wait_for_prompt:
             output = self.process.stdout.readline()
@@ -51,13 +58,20 @@ class CalculatorLibrary(object):
                     break
 
     def press_buttons(self, values):
-        """Enters multiple button presses using the press_button method
+        """Enters multiple button presses. passed in, using the `Press Button` method
+
+        Examples:
+        | Press Buttons | 1+2 |
+        | Press Buttons | 1.5 + 2 |
         """
         for value in values.replace(' ', ''):
             self.press_button(value)
 
     def result_should_be(self, expected):
-        """Verifies that the current prompt_display is ``expected``.
+        """Verifies that the current prompt_display is ``expected``. It compares the passed value with the value read at the end of the "Display Output: " line.
+        
+        Example:
+        | Result should be | 3 |
         """
         wait_for_prompt = True
         while wait_for_prompt:
@@ -83,6 +97,10 @@ class CalculatorLibrary(object):
 
     def should_cause_error(self, expression):
         """Verifies that calculating the given ``expression`` causes an error.
+
+        Example:
+        | Should cause error | p |
+        This would return ``Invalid Input``
         """
         try:
             self.push_buttons(expression)

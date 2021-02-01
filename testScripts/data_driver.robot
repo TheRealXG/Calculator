@@ -1,15 +1,15 @@
 *** Settings ***
 Documentation     Example test cases using a data-driver input file.
-
+...               This reads in a CSV file and uses the columns as
+...               arguments for the Test Case, as in the Data Driven tests.
 Test Template     Calculate
 Library           CalculatorLibrary.py
-Library           DataDriver  file=data_driver.csv  dialect=unix
+Library           DataDriver    file=data_driver.csv    dialect=unix
 Test Setup        Start Process
 Test Teardown     Close Streams
 
 *** Test Cases ***
 Calculate ${expression} ${expected}
-
 
 
 *** Keywords ***

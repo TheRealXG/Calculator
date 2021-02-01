@@ -11,8 +11,8 @@ Documentation     Example test cases using the data-driven testing approach.
 ...               is the last test that has a custom _template keyword_.
 Test Template     Calculate
 Library           CalculatorLibrary.py
-Test Setup  Start Process
-Test Teardown   Close Streams
+Test Setup        Start Process
+Test Teardown     Close Streams
 
 *** Test Cases ***    Expression    Expected
 Addition              12 + 2        14
@@ -32,7 +32,6 @@ Failing               1 + 1         3
 Calculation error     [Template]    Calculation should fail
                       w             Invalid Input
                       p             Invalid Input
-
 
 *** Keywords ***
 Calculate
