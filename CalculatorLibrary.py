@@ -1,17 +1,22 @@
-#from calculator import Calculator, CalculationError
 import shlex
 import subprocess
 
 class CalculatorLibrary(object):
-    """Test library for testing *Calculator* business logic.
-
-    Interacts with the calculator directly using its ``push`` method.
+    """Test library for testing *Calculator* App.
     """
     prompt = "Press Button"
     prompt_display = "Display Output"
     bad_input = "Invalid Input"
 
     def __init__(self):
+        """Method run at instantiation of Python object.
+        """
+        self._result = ''
+
+
+    def start_process(self):
+        """Setup method to start QEMU process. Could use ___init___ in this case, but testing Setup test case function
+        """
         qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe")
         self.process= subprocess.Popen(qemu_cmd,
                         stdin =subprocess.PIPE,
@@ -21,9 +26,14 @@ class CalculatorLibrary(object):
                         bufsize=0)
         self._result = ''
 
+    def close_Streams(self):
+        """Ensure QEMU is quit and not left as a zombie process. Close STDIN sream
+        """
+        self.press_button("q")
+        self.process.stdin.close()
 
     def press_button(self, value):
-        """Enters the value to be operated on in the calculator"""
+        """Enters the value or operator to the calculator"""
         wait_for_prompt = True
         while wait_for_prompt:
             output = self.process.stdout.readline()
@@ -31,6 +41,8 @@ class CalculatorLibrary(object):
             if self.prompt in output:
                 print(output.strip())
                 self.process.stdin.write(value + "\n")
+                output = self.process.stdout.readline()
+                print(output.strip())
                 wait_for_prompt = False
             else:
                 print(output.strip())
@@ -39,13 +51,14 @@ class CalculatorLibrary(object):
                     break
 
     def press_buttons(self, values):
+        """Enters multiple button presses using the press_button method
+        """
         for value in values.replace(' ', ''):
             self.press_button(value)
 
     def result_should_be(self, expected):
         """Verifies that the current prompt_display is ``expected``.
         """
-        self.process.stdin.close()
         wait_for_prompt = True
         while wait_for_prompt:
             output = self.process.stdout.readline()
@@ -61,26 +74,23 @@ class CalculatorLibrary(object):
                     return self._result
                 else:   
                     raise AssertionError('%s != %s' % (self._result, expected))
+            # Check for Invalid Input error
+            elif self.bad_input in output:
+                print(output.strip())
+                raise AssertionError('Bad Input')
             else:
                 print(output.strip())
 
 
-# TODO to update
     def should_cause_error(self, expression):
         """Verifies that calculating the given ``expression`` causes an error.
-
-        The error message is returned and can be verified using, for example,
-        `Should Be Equal` or other keywords in `BuiltIn` library.
-
-        Examples:
-        | Should Cause Error | invalid            |                   |
-        | ${error} =         | Should Cause Error | 1 / 0             |
-        | Should Be Equal    | ${error}           | Division by zero. |
         """
         try:
             self.push_buttons(expression)
-        except CalculationError as err:
-            return str(err)
+            # Check if it accepts the input and shows prompt display or Errors out 
+            self.result_should_be(prompt_display)
+        except:
+            return str("Invalid Input")
         else:
             raise AssertionError("'%s' should have caused an error."
                                  % expression)

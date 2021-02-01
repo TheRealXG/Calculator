@@ -55,12 +55,19 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 # Test
 1. This branch is setup to use the Robot Test Framework for testing which first needs installed  
 	(Assuming Python 3 is already installed)  
-	`pip install robotframework`  
-	`pip install docutils`  
+	`pip3 install robotframework`  
+	`pip3 install docutils`  
 2. In the main Calculator folder execute  
 	`robot keyword_driven.robot`  
 	This will run 7 basic test cases (4P/3F) and report the results to the command line. Test details can be viewed by opening `log.html`  
-3. More tests and development is in work on this testing framework
+3. To execute all Robot tests in the folder run  
+	`robot .`  
+4. For Data Driven tests, first run  
+	`pip3 install --upgrade robotframework-datadriver`  
+	`robot data_driver.robot`  
+	This will execute a test that reads in a CSV of expressions to test `data_driver.csv`  
+	Expressions can be entered on a new line with the first entry being the input expression then the expected output.  
+5. More tests and development is in work on this testing framework
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 

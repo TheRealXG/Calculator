@@ -11,6 +11,8 @@ Documentation     Example test cases using the keyword-driven testing approach.
 ...               same workflow needs to repeated multiple times, it is best
 ...               to use to the _data-driven_ approach.
 Library           CalculatorLibrary.py
+Test Setup  Start Process
+Test Teardown   Close Streams
 
 *** Test Cases ***
 Add 2 Values

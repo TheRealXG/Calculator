@@ -1,0 +1,3 @@
+${expression},${expected}
+24+2,26
+24-2,22
