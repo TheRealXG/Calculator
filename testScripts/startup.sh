@@ -11,7 +11,7 @@ cd /volume
 ./waf
 
 #Run the Robot test framework on all *.robot files in testScripts. Output in main Calculator folder.
-robot testScripts/.
+robot --xunit results testScripts/.
 
 #debug statements
 echo "Startup.sh script was ran." >> /volume/log.txt
