@@ -10,6 +10,11 @@ cd /volume
 ./waf configure --rtems=/rtems/quick-start/rtems/5 --rtems-bsp=arm/realview_pbx_a9_qemu
 ./waf
 
+pip3 install robotframework
+pip3 install docutils
+pip3 install --upgrade robotframework-datadriver
+
+
 #Run the Robot test framework on all *.robot files in testScripts. Output in main Calculator folder.
 robot --xunit results testScripts/.
 
