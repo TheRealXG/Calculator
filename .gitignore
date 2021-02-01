@@ -8,6 +8,10 @@ results.txt
 build
 .waf*/
 
+#Python generated files
+__*
+*/__*
+
 
 # Prerequisites
 *.d
@@ -23,7 +27,7 @@ build
 *.map
 *.exp
 # Allow Expect script files
-!testScripts/*
+!testScripts/*.exp
 
 # Precompiled Headers
 *.gch

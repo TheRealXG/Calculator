@@ -10,10 +10,8 @@ cd /volume
 ./waf configure --rtems=/rtems/quick-start/rtems/5 --rtems-bsp=arm/realview_pbx_a9_qemu
 ./waf
 
-#Make expect script executable then run it with some default settings as of now
-chmod +x /volume/testScripts/Test_Calculator.exp
-python3 testScripts/tester.py
-#testScripts/inputs.txt
+#Run the Robot test framework on all *.robot files in testScripts. Output in main Calculator folder.
+robot testScripts/.
 
 #debug statements
 echo "Startup.sh script was ran." >> /volume/log.txt
