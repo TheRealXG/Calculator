@@ -25,7 +25,7 @@ Multiplication        12 * 2        24
                       2 * .5        1
 
 Division              12 / 2        6
-                      2 / 4         .5
+                      2 / 4         0.5
 
 Failing               1 + 1         3
 
