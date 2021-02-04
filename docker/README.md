@@ -24,6 +24,7 @@ Docker run flags used:
 In the pipeline, there is a CMD line at the end of the Dockerfile that will execute a bash script to control operations in the container.
 Currently this start.sh script calls another script, startup.sh which is kept in source control, so it can be customized to fit needs.
 This is the command to start the container in the pipeline:
+
   `docker run -v $(Build.SourcesDirectory):/volume rtems`
 
 # Contribute
