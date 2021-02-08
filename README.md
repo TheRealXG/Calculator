@@ -54,15 +54,20 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 
 # Test
 1. To run a simple Expect script execute  
-	`./testScripts/Test_Calculator.exp 1 + 2 3`  
-	This will execute the Calculator in QEMU, it will provide 1 and 2 as inputs and add them and expect 3 as the output. It will print "Test Pass:" to the screen
+	`./testScripts/Test_Calculator.exp 1 + 2 3 1`  
+	This will execute the Calculator in QEMU, it will provide 1 and 2 as inputs and add them and expect 3 as the output. "1" at the end is the run number. It will print "Test Pass:" to the screen
 2. For a test failure, execute  
-	`./testScripts/Test_Calculator.exp 1 + 2 4`  
+	`./testScripts/Test_Calculator.exp 1 + 2 4 1`  
 	This will execute the Calculator but expect 4 instead of 3 and print "Test Fail:" to the screen
 3. Test other operators (sometimes the argument must be escaped):  
-	`./testScripts/Test_Calculator.exp 3 - 1 2`  
-	`./testScripts/Test_Calculator.exp 3 \* 2 6`  
-	`./testScripts/Test_Calculator.exp 4 \ 2 2` (Note: Known bug application actually multiplies instead of dividing)
+	`./testScripts/Test_Calculator.exp 3 - 1 2 1`  
+	`./testScripts/Test_Calculator.exp 3 \* 2 6 1`  
+	`./testScripts/Test_Calculator.exp 4 \ 2 2 1` (Note: Known bug application actually multiplies instead of dividing)
+4. To run a set of random tests, execute  
+	`python3 testScripts/tester.py`  
+	Or to provide a set of static inputs:  
+	`python3 testScripts/tester.py testScripts/inputs.txt`  
+	These will place logs files from each run in the `logs` folder and tallied results in `results.txt` and `results.xml`.
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
