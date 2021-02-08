@@ -4,6 +4,7 @@
   
 #include "kcg_types.h"
 #include <stdio.h>
+#include "string.h"
 
 #if _MSC_VER
 #define snprintf _snprintf

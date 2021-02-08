@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+#include "stdbool.h"
 
 /*Allocate the controller memory*/
 inC_root_Calc inC;
