@@ -2,6 +2,9 @@
 *.log
 results.txt
 *.xml
+# Robot Framework log files
+log.html
+report.html
 
 #WAF files
 .lock*
