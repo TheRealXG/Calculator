@@ -53,24 +53,30 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 	`qemu-system-arm -net none -no-reboot -nographic -M realview-pbx-a9 -m 256M -kernel $GIT_REPO/build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe`
 
 # Test
-1. To run a simple Expect script execute  
-	`./testScripts/Test_Calculator.exp 1 + 2 3 1`  
-	This will execute the Calculator in QEMU, it will provide 1 and 2 as inputs and add them and expect 3 as the output. "1" at the end is the run number. It will print "Test Pass:" to the screen
-2. For a test failure, execute  
-	`./testScripts/Test_Calculator.exp 1 + 2 4 1`  
-	This will execute the Calculator but expect 4 instead of 3 and print "Test Fail:" to the screen
-3. Test other operators (sometimes the argument must be escaped):  
-	`./testScripts/Test_Calculator.exp 3 - 1 2 1`  
-	`./testScripts/Test_Calculator.exp 3 \* 2 6 1`  
-	`./testScripts/Test_Calculator.exp 4 \ 2 2 1` (Note: Known bug application actually multiplies instead of dividing)
-4. To run a set of random tests, execute  
-	`python3 testScripts/tester.py`  
-	Or to provide a set of static inputs:  
-	`python3 testScripts/tester.py testScripts/inputs.txt`  
-	These will place logs files from each run in the `logs` folder and tallied results in `results.txt` and `results.xml`.
+1. This branch is setup to use the Robot Test Framework for testing which first needs installed  
+	(Assuming Python 3 is already installed)  
+	`pip3 install robotframework`  
+	`pip3 install docutils`  
+2. In the main Calculator folder execute  
+	`robot testScripts/keyword_driven.robot`  
+	This will run 7 basic test cases (4P/3F) and report the results to the command line. Test details can be viewed by opening `log.html`  
+3. To execute all Robot tests in the folder run  
+	`robot testScripts/.`  
+4. For Data Driven tests, first run  
+	`pip3 install --upgrade robotframework-datadriver`  
+	`robot testScripts/data_driver.robot`  
+	This will execute a test that reads in a CSV of expressions to test `data_driver.csv`  
+	Expressions can be entered on a new line with the first entry being the input expression then the expected output.  
+5. To generate XUnit XML output in results.xml, run  
+	`robot --xunit results testScripts/.`
+6. More tests and development is in work on this testing framework
 
 # Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+TODO: Explain how other users and developers can contribute to make your code better.  
+To generate Robot Custom Library documentation:  
+	`python3 -m robot.libdoc testScripts/CalculatorLibrary.py Calc_Lib.html`  
+To generate HTML documentation on Test Cases:  
+	`python3 -m robot.testdoc testScripts/*.robot test_Doc.html`
 
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
 - [ASP.NET Core](https://github.com/aspnet/Home)

@@ -49,7 +49,7 @@ kcg_float32 performFunction_Calc(
             kcg_lit_float32(0.0));
         /* IfBlock1:else:else:else: */
         if (else_clock_else_else_IfBlock1) {
-          output = value1 * value2;
+          output = value1 / value2;
         }
         else {
           output = kcg_lit_float32(0.);
