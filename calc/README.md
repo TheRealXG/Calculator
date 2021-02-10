@@ -49,7 +49,7 @@ Generate the software development kit by following the steps from [Generating th
    2. Update the build directory conf/local.conf file to set the SDK variable.
       - Open the projectDir/build/conf/local.conf in an editor  
         This is wrl/build/conf/local.conf  
-	Add the folowing line:  
+	Add the following line:  
         `SDKMACHINE = "x86_64"`  
 	
    3. Generate the SDK.  
