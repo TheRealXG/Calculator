@@ -36,13 +36,41 @@ This uses the [Wind_River_Linux_Platform_Development_Quick_Start_LTS_19](https:/
         `WRTEMPLATE ?= "feature/gdb"`
    4. Build the platform project image.  
       `bitbake wrlinux-image-small`  
-4. Deploy the platform project by following these steps from [Deploying the Platform Project Image](https://docs.windriver.com/bundle/Start_here_Wind_River_Linux_Platform_Development_Quick_Start_LTS_19/page/snd1605740797216.html)
-   1. Deploy the platform project
+4. Deploy the platform project by following these steps from [Deploying the Platform Project Image](https://docs.windriver.com/bundle/Start_here_Wind_River_Linux_Platform_Development_Quick_Start_LTS_19/page/snd1605740797216.html):  
+   1. Deploy the platform project  
       `runqemu qemuppc`  
 
 # Generating the SDK
+Generate the software development kit by following the steps from [Generating the SDK](https://docs.windriver.com/bundle/Wind_River_Linux_Platform_Developers_Guide_9_1/page/faq1518556223077.html):  
+   1. Set up the development environment.  
+      `. ./environment-setup-x86_64-wrlinuxsdk-linux`  
+      `. ./oe-init-build-env build`  
+      
+   2. Update the build directory conf/local.conf file to set the SDK variable.
+      - Open the projectDir/build/conf/local.conf in an editor  
+        This is wrl/build/conf/local.conf  
+	Add the folowing line:  
+        `SDKMACHINE = "x86_64"`  
+	
+   3. Generate the SDK.  
+      `bitbake -c  populate_sdk wrlinux-image-small`  
+   
+   4. Install the SDK on the host.  
+      `./tmp-glibc/deploy/sdk/wrlinux-10.19.45.15-glibc-x86_64-qemuppc-wrlinux-image-small-sdk.sh`  
+      
+# Adding a package to the platform build
+1. Create a directory for your platform project and navigate to it  
+   `mkdir -p ~/wrl/layers/local/recipes-sample/calc`  
+   `cd ~/wrl/layers/local/recipes-sample/calc`  
+2. Clone the calculator Git repository   
+   `git clone --branch wrl https://github.com/TheRealXG/Calculator.git`  
+3. Add your package to the platform project build.  
+   - Open the build directory conf/local.conf file in an editor and add the following line:  
+     `IMAGE_INSTALL_append +=  " calc"`  
 
-
+4. Build the file system to include the package in your platform project image.  
+   `bitbake wrlinux-image-small`  
+   
 # Test
 1. This branch is setup to use the Robot Test Framework for testing which first needs installed  
 	(Assuming Python 3 is already installed)  
