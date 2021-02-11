@@ -1,14 +1,14 @@
 # Introduction 
-This is the dockerfile that is used to create the docker image that is used in the RTEMS pipeline.
+This is the dockerfile that is used to create the docker image that is used in the Windriver Linux pipeline.
 
 # Getting Started
 Download and install Docker on a development computer - [Get Docker](https://docs.docker.com/get-docker/).
 
 # Build and Run
 1.	In the same directory as the Dockerfile, execute the following:  
-	`docker build -t rtems .`  
+	`docker build -t wrl .`  
 2.	Then launch the container with:  
-	`docker run -ti --rm -v D:\docker\RTEMS\volume:/volume rtems /bin/bash`
+	`docker run -ti --rm -v D:\docker\WRL\volume:/volume wrl /bin/bash`
   
 # More Information
 Docker run flags used: 
@@ -25,7 +25,7 @@ In the pipeline, there is a CMD line at the end of the Dockerfile that will exec
 Currently this start.sh script calls another script, startup.sh which is kept in source control, so it can be customized to fit needs.
 This is the command to start the container in the pipeline:
 
-  `docker run -v $(Build.SourcesDirectory):/volume rtems`
+  `docker run -v $(Build.SourcesDirectory):/volume wrl`
 
 # Contribute
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
