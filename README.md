@@ -20,7 +20,7 @@ This uses the [Wind_River_Linux_Platform_Development_Quick_Start_LTS_19](https:/
    2. Clone the Wind River Linux Git repository   
       `git clone --branch WRLINUX_10_19_BASE https://github.com/WindRiver-Labs/wrlinux-x`
    3. Run **setup.sh** to define your project configuration  
-      `./wrlinux-x/setup.sh --machines qemuxppc`  
+      `./wrlinux-x/setup.sh --machines qemuppc`  
    4. Set up the development environment. This step must be performed each time you work on your project  
       `. ./environment-setup-x86_64-wrlinuxsdk-linux`  
       `. ./oe-init-build-env`  
