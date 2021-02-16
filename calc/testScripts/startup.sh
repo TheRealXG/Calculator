@@ -1,17 +1,25 @@
 #!/bin/bash
 
-#set QEMU_AUDIO_DRV to none to get rid of nag 
-export QEMU_AUDIO_DRV="none"
+#set enviromental variables for SDK
+. ./environment-setup-x86_64-wrlinuxsdk-linux
+. ./oe-init-build-env build
+. /home/wrlbuild/wrl-sdk/environment-setup-ppc7400-wrs-linux
+export LANG=en_US.UTF-8
 
-#change to mounted git repository directory
-cd /volume
+#add calc package to platform
+echo "IMAGE_INSTALL_append += \" calc\"" >> /home/wrlbuild/wrl/build/conf/local.conf
 
-#configure waf to build exe with correct rtems dir and BSP / then build
-./waf configure --rtems=/rtems/quick-start/rtems/5 --rtems-bsp=arm/realview_pbx_a9_qemu
-./waf
+#copy source to bitbake local bitbake layers location
+mkdir -p /home/wrlbuild/wrl/layers/local/recipes-sample/calc
+cp -R /volume/* /home/wrlbuild/wrl/layers/local/recipes-sample/calc
 
+#for some reason repodata folder isn't empty, maually remove it
+rm -R /home/wrlbuild/wrl/build/tmp-glibc/work/qemuppc-wrs-linux/wrlinux-image-small/1.0-r1/oe-rootfs-repo/repodata
+#rebuild image
+bitbake wrlinux-image-small
 
 #Run the Robot test framework on all *.robot files in testScripts. Output in main Calculator folder.
+cd /volume/calc
 robot --xunit results testScripts/.
 
 #debug statements
