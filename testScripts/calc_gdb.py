@@ -4,6 +4,7 @@ from pygdbmi.gdbcontroller import GdbController
 from pygdbmi.constants import GdbTimeoutError
 from pprint import pprint
 import subprocess
+import sys
 
 def main():
 	# Start gdb process
@@ -65,6 +66,17 @@ def main():
 			response = gdbmi.get_gdb_response(1)
 			print_output(response)
 			pprint(response)
+			#TODO Trying to find out what the old and new values are after a watchpoint is hit to make decisions
+			# on, this could be useful for allowing this to escape with a "q" or to know when the Calc
+			# is ready for another input when testing via memory manipulation only
+			payload = get_payloads(response)
+			print("\n***Split value***\n")
+			# This splits to get the new value at the watchpoint
+			new_val = payload.split("New value =",1)[1].split()[0]
+			# If a "q" was entered at the watch-point break, then exit the program
+			if(new_val == str(ord('q'))):
+				sys.exit("q entered")
+
 			# Assuming response is due to hitting Input breakpoint (can check later)
 			print("\n######\nset Input (hardcoded address) to ASCII 53\n")
 			response = gdbmi.write("-gdb-set *((char*) 0x2080b7) = 53")
@@ -80,7 +92,20 @@ def main():
 
 	#continue_to_running(gdbmi, response)
 
+def get_payloads(_response):
+	"""
+	Iterate through response and pull the all of the "none" payloads out
 
+	It seems the "none" payloads contain a lot of the information after a watch-point is hit.
+	This may not be a long term function or need additional parameters for the types of payloads
+	to get,s uch as "none" or "stopped" etc.
+	"""
+	retr_val = ""
+	for i in _response:
+		if str(i['message']) == "None":
+			retr_val += i['payload']
+			print(i['payload'])
+	return retr_val
 
 
 def continue_to_running(_gdbmi, _response):
