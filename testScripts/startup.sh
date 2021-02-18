@@ -8,6 +8,7 @@ cd /volume
 
 #configure waf to build exe with correct rtems dir and BSP / then build
 ./waf configure --rtems=/rtems/quick-start/rtems/5 --rtems-bsp=arm/realview_pbx_a9_qemu
+echo "./build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory ./waf"
 ./build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory ./waf
 
 
