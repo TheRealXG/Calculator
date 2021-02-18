@@ -30,7 +30,7 @@ def build(bld):
 
     bld(features = 'c cprogram',
         target = 'rtems/calc.exe',
-        cflags = '-g -O2',
+        cflags = '-g',
 	includes = 'gen man',
         source = ['man/main.c',
 		'man/init.c',
