@@ -78,8 +78,33 @@ def main():
 
 	response = gdbmi.write("-exec-continue")
 	pprint(response)
-	if is_breakpoint(response):
-		# Find breakpoint message, get old/new values and compare, change memory
+
+	while(True):
+		# If the response contains a breakpoint message then process to see if it is what we want
+		if is_breakpoint(response):
+			# Iterate through all messages in response to find the break-point message
+			for i in response:
+				if str(i['message']) == "breakpoint-modified":
+					# Found the breakpoint message, get the breakpoint number to make sure it matches our watch above
+					bkpt_hit = i['payload']['bkpt']['number']
+					if bkpt_hit == watchpoint_flag:
+						# Get the old and new values to confirm the transition
+						values = get_old_new_value(response)
+						# Transitioned from 0 to 1, so ready to set input
+						if (str(values[0]) == "false" and str(values[1]) == "true"):
+							# Modify input value to equal "5"
+							print("\n######\nset Input (hardcoded address) to ASCII 53\n")
+							response = gdbmi.write("-gdb-set *((char*) " + str(addr_of_input) + ") = 53")
+							pprint(response)
+							print("\n######\nprint input\n")
+							response = gdbmi.write("print input")
+							pprint(response)
+
+							# Set flag to 0 to indicate Calculator can continue
+							response = gdbmi.write("-gdb-set *((_Bool *) " + str(addr_of_flag) + ") = 0")
+							pprint(response)
+		response = gdbmi.write("-exec-continue")
+		pprint(response)
 
 	# Allow it to continue
 	#continue_to_running(gdbmi, response)
@@ -88,6 +113,7 @@ def main():
 	#Can I wait at the GDB prompt and know when something comes through or do I have to check?
 
 	# Wait for response that will break on 'input'
+	"""
 	while(True):
 		print("\n######\nWait 10 seconds for response\n")
 		try:
@@ -119,12 +145,13 @@ def main():
 						# Set flag to 0 to indicate Calculator can continue
 						response = gdbmi.write("-gdb-set *((_Bool *) " + str(addr_of_flag) + ") = 0")
 						pprint(response)
-						"""
+						
 
 			#response = _gdbmi.write("-exec-continue")
 			#continue_to_running(gdbmi, response)
 		except GdbTimeoutError:
 			print("***Try Again***")
+	"""
 
 	# This works to modify memory since we know the location. This is happening in vscanf scope.
 	#print("\n######\nset Input (hardcoded address) to ASCII 53\n")
@@ -133,14 +160,11 @@ def main():
 
 	#continue_to_running(gdbmi, response)
 
-def execute_breakpoint_x(_gdbmi, _response, bkpt_num):
-
-
 def is_breakpoint(_response):
 	"""
 	This will take a response and return if it contains a "breakpoint-modified" message
 
-
+	Parameters: The response list of dicts from a GDBMI write
 	"""
 	for i in _response:
 		if str(i['message']) == "breakpoint-modified":
