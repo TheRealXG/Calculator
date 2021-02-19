@@ -1,4 +1,0 @@
--target_dir "gen" -target C -name_length 200 -significance_length 31 -user_config "../man/user_macros.h" 
--root Calc::root
-"../Calculator/Calc.xscade"
-
