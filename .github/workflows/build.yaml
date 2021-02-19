@@ -17,7 +17,6 @@ jobs:
           
       - name: Building
         run: |
-          cd ${{ github.workspace }}
           ./build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory make clean all
           
       - name: SonarCloud Scan
