@@ -17,12 +17,15 @@ jobs:
           
       - name: Building
         run: |
+          echo $PWD
+          cd $GITHUB_WORKSPACE
+          echo $PWD
           ./build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory make clean all
           
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: /home/runner/work/Calculator/Calculator
+          projectBaseDir: $GITHUB_WORKSPACE
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
