@@ -5,7 +5,23 @@ on:
       - sonartesting
   pull_request:
     types: [opened, synchronize, reopened]
+    
 jobs:
+  Compile:
+    name: compile
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+          submodules: recursive
+          
+    - name: Building
+      run: |
+        cd ${{ github.workspace }}
+        build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory make clean all    
+      
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
