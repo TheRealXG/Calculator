@@ -16,6 +16,16 @@ Test Setup        Start Process
 Test Teardown     Close Streams
 
 *** Test Cases ***
+
+
+Add 2 Values
+    Press Button    1
+    Press Button    +
+    Press Button    2
+    Press Button    =
+    Result should be    3
+
+*** Comments ***
 2 Digit Random Values
     ${val_1} =    Generate Random String    2    [NUMBERS]
     ${op} =    Generate Random String    1    +-*/
@@ -27,13 +37,6 @@ Test Teardown     Close Streams
 
 2 Digit Random Values Repeated, No /
     Repeat Keyword    5 times    Calculate with Random Values    2    2
-
-Add 2 Values
-    Press Button    1
-    Press Button    +
-    Press Button    2
-    Press Button    =
-    Result should be    3
 
 Add Decimals
     Press Button    2

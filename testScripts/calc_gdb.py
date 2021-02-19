@@ -10,7 +10,6 @@ import sys
 def main():
 	# Start gdb process
 	gdbmi = GdbController(["arm-rtems5-gdb", "--nx", "--quiet", "--interpreter=mi3"])
-	#print(gdbmi.get_subprocess_cmd())  # print actual command run as subprocess
 
 	# Load binary a.out and get structured response
 	print("\n######\n-file-exec-and-symbols build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe\n")
@@ -26,22 +25,7 @@ def main():
 	response = gdbmi.write("-target-select remote localhost:1234")
 	print_output(response)
 
-	"""
-	#Set a breakpoint. Specific line value isn't very robust though. Needed for initial input
-	print("\n######\n-break-insert --source main.c --line 101\n")
-	response = gdbmi.write("-break-insert --source main.c --line 101")
-	print_output(response)
-
-	# Allow it to continue
-	continue_to_running(gdbmi, response)
-
-	# Wait for first response
-	print("\n######\nWait 10seconds for response\n")
-	response = gdbmi.get_gdb_response(10)
-	print_output(response)
-	"""
-
-	# Create watch point now that input is in scope (had to set known breakpoint above then interact to get in scope)
+	# Create the watchpoing on the flag to know when to modify Input
 	print("\n######\n-break-watch flag\n")
 	response = gdbmi.write("-break-watch flag")
 	watchpoint_flag = response[0]['payload']['wpt']['number']
@@ -49,36 +33,16 @@ def main():
 	print("Watchpoint #: " + str(response[0]['payload']['wpt']['number']))
 	pprint(response)
 
-	print("\n######\nprint &input\n")
-	response = gdbmi.write("print &input")
-	pprint(response)
-	# Get the memory address of "input" while the program is stopped in scope
+	# Get the memory addresses of the relevant variables (input and flag to restart the Calculator)
 	addr_of_input = get_addr_of_var(gdbmi, "input")
 	addr_of_flag = get_addr_of_var(gdbmi, "flag")
-
-	print("\n######\nprint flag\n")
-	response = gdbmi.write("print flag")
-	pprint(response)
-
-	# TESTING Set the first value (can this be removed?)
-	print("\n######\nset Input (hardcoded address) to ASCII 53\n")
-	response = gdbmi.write("-gdb-set *((char*) " + str(addr_of_input) + ") = 53")
-	pprint(response)
-	print("\n######\nprint input\n")
-	response = gdbmi.write("print input")
-	pprint(response)
-
-	# Set flag to 0 to indicate Calculator can continue
-	print("\n######\nChange flag to 0\n")
-	response = gdbmi.write("-gdb-set *((_Bool *) " + str(addr_of_flag) + ") = 0")
-	pprint(response)
-	print("\n######\nprint flag\n")
-	response = gdbmi.write("print flag")
-	pprint(response)
-
+	# Set the first input value
+	set_input(gdbmi, addr_of_input, addr_of_flag, "53")
+	
 	response = gdbmi.write("-exec-continue")
 	pprint(response)
 
+	# This will continually loop and set the input value, trigger the flag, and try again.
 	while(True):
 		# If the response contains a breakpoint message then process to see if it is what we want
 		if is_breakpoint(response):
@@ -92,73 +56,27 @@ def main():
 						values = get_old_new_value(response)
 						# Transitioned from 0 to 1, so ready to set input
 						if (str(values[0]) == "false" and str(values[1]) == "true"):
-							# Modify input value to equal "5"
-							print("\n######\nset Input (hardcoded address) to ASCII 53\n")
-							response = gdbmi.write("-gdb-set *((char*) " + str(addr_of_input) + ") = 53")
-							pprint(response)
-							print("\n######\nprint input\n")
-							response = gdbmi.write("print input")
-							pprint(response)
-
-							# Set flag to 0 to indicate Calculator can continue
-							response = gdbmi.write("-gdb-set *((_Bool *) " + str(addr_of_flag) + ") = 0")
-							pprint(response)
+							# Modify input value to equal "5" (ASCII 53)
+							set_input(gdbmi, addr_of_input, addr_of_flag, "53")
 		response = gdbmi.write("-exec-continue")
 		pprint(response)
 
-	# Allow it to continue
-	#continue_to_running(gdbmi, response)
 
-	#TODO How to poll for a response without being tied to an X second timer?
-	#Can I wait at the GDB prompt and know when something comes through or do I have to check?
-
-	# Wait for response that will break on 'input'
+def set_input(_gdbmi, _addr_of_input, _addr_of_flag, value):
 	"""
-	while(True):
-		print("\n######\nWait 10 seconds for response\n")
-		try:
-			response = gdbmi.write("-exec-continue")
-			#response = gdbmi.get_gdb_response(10)
-			print_output(response)
-			pprint(response)
-			#TODO Trying to find out what the old and new values are after a watchpoint is hit to make decisions
-			# on, this could be useful for allowing this to escape with a "q" or to know when the Calc
-			# is ready for another input when testing via memory manipulation only
-
-			# If a breakpoint was hit and the breakpoint number matches the watchpoint set above
-			# then get the Old and New values to assess and/or modify
-			if response[0]['message'] == "breakpoint-modified":
-				bkpt_hit = response[0]['payload']['bkpt']['number']
-				if bkpt_hit == watchpoint_flag:
-					values = get_old_new_value(response)
-
-					# Transitioned from 0 to 1, so ready to set input
-					if (str(values[0]) == "false" and str(values[1]) == "true"):
-						# Modify input value to equal "5"
-						print("\n######\nset Input (hardcoded address) to ASCII 53\n")
-						response = gdbmi.write("-gdb-set *((char*) " + str(addr_of_input) + ") = 53")
-						pprint(response)
-						print("\n######\nprint input\n")
-						response = gdbmi.write("print input")
-						pprint(response)
-
-						# Set flag to 0 to indicate Calculator can continue
-						response = gdbmi.write("-gdb-set *((_Bool *) " + str(addr_of_flag) + ") = 0")
-						pprint(response)
-						
-
-			#response = _gdbmi.write("-exec-continue")
-			#continue_to_running(gdbmi, response)
-		except GdbTimeoutError:
-			print("***Try Again***")
+	This will set the variable input to the value passed and set the flag to 0 to release the Calculator
 	"""
+	print("\n######\nset Input (hardcoded address)\n")
+	response = _gdbmi.write("-gdb-set *((char*) " + str(_addr_of_input) + ") = " + str(value))
+	pprint(response)
+	print("\n######\nprint input\n")
+	response = _gdbmi.write("print input")
+	pprint(response)
 
-	# This works to modify memory since we know the location. This is happening in vscanf scope.
-	#print("\n######\nset Input (hardcoded address) to ASCII 53\n")
-	#response = gdbmi.write("-gdb-set *((char*) 0x2080b7) = 53")
-	#pprint(response)
+	# Set flag to 0 to indicate Calculator can continue
+	response = _gdbmi.write("-gdb-set *((_Bool *) " + str(_addr_of_flag) + ") = 0")
+	pprint(response)
 
-	#continue_to_running(gdbmi, response)
 
 def is_breakpoint(_response):
 	"""
@@ -211,7 +129,7 @@ def get_payloads(_response):
 
 	It seems the "none" payloads contain a lot of the information after a watch-point is hit.
 	This may not be a long term function or need additional parameters for the types of payloads
-	to get,s uch as "none" or "stopped" etc.
+	to get, such as "none" or "stopped" etc.
 	"""
 	retr_val = ""
 	for i in _response:

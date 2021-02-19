@@ -1,14 +1,20 @@
 import shlex
 import subprocess
+from pygdbmi.gdbcontroller import GdbController
+from pygdbmi.constants import GdbTimeoutError
+from pprint import pprint
+import sys
 
 class CalculatorLibrary(object):
     """Library for testing the Ansys *Calculator* App running in QEMU.
 
     This library interacts with the Console running QEMU to provide input, "Press Buttons" and read output to verify functionality.
     """
-    prompt = "Press Button"
+    prompt = "Input value" #"Press Button"
     prompt_display = "Display Output"
     bad_input = "Invalid Input"
+    #Global variable for GDBMI responses for functions to access
+    response = ""
 
     def __init__(self):
         """Method run at instantiation of Python object, simply initializes results to ''
@@ -19,7 +25,8 @@ class CalculatorLibrary(object):
     def start_process(self):
         """Setup method to start QEMU process.
         """
-        qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe")
+        file_path = "build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe"
+        qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel " + file_path + " -s")
         self.process= subprocess.Popen(qemu_cmd,
                         stdin =subprocess.PIPE,
                         stdout=subprocess.PIPE,
@@ -27,6 +34,40 @@ class CalculatorLibrary(object):
                         universal_newlines=True,
                         bufsize=0)
         self._result = ''
+
+        # Clear out frist printed responses from console
+        output = self.process.stdout.readline()
+        print(output.strip())
+        output = self.process.stdout.readline()
+        print(output.strip())
+        
+        # Setup the GDB Controller to connect to the QEMU server
+        self.gdbmi = GdbController(["arm-rtems5-gdb", "--nx", "--quiet", "--interpreter=mi3"])
+
+        # Load binary
+        print("\n######\n-file-exec-and-symbols build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe\n")
+        response = self.gdbmi.write("-file-exec-and-symbols " + file_path)
+        self.print_output(response)
+
+        # Connect to the remote host 
+        print("\n######\n-target-select remote localhost:1234\n")
+        response = self.gdbmi.write("-target-select remote localhost:1234")
+        self.print_output(response)
+
+        # Create the watchpoing on the flag to know when to modify Input
+        print("\n######\n-break-watch flag\n")
+        response = self.gdbmi.write("-break-watch flag")
+        watchpoint_flag = response[0]['payload']['wpt']['number']
+        self.print_output(response)
+        print("Watchpoint #: " + str(response[0]['payload']['wpt']['number']))
+        pprint(response)
+
+        # Get the memory addresses of the relevant variables (input and flag to restart the Calculator)
+        self.addr_of_input = self.get_addr_of_var(self.gdbmi, "input")
+        self.addr_of_flag = self.get_addr_of_var(self.gdbmi, "flag")
+        print(self.addr_of_input)
+        print(self.addr_of_flag)
+        
 
     def close_Streams(self):
         """Teardown method to ensure QEMU is quit and not left as a zombie process. Close STDIN stream.
@@ -41,15 +82,23 @@ class CalculatorLibrary(object):
         | Press Button | 1 |
         | Press Button | + |
         """
+
+        # Execute GDB commands to place input into memory and start the Calculator executing
+        self.set_input(self.gdbmi, self.addr_of_input, self.addr_of_flag, ord(value))
+    
+        self.response = self.gdbmi.write("-exec-continue")
+        
+        # TODO Do we need to check this output to see if we got to a watchpoint? Or do this before button and run more exec-continues until getting there?
+
+        # Use the following to print the Input Value lines to the console for logging purposes
         wait_for_prompt = True
         while wait_for_prompt:
             output = self.process.stdout.readline()
 
             if self.prompt in output:
                 print(output.strip())
-                self.process.stdin.write(value + "\n")
-                output = self.process.stdout.readline()
-                print(output.strip())
+                #output = self.process.stdout.readline()
+                #print(output.strip())
                 wait_for_prompt = False
             else:
                 print(output.strip())
@@ -111,3 +160,57 @@ class CalculatorLibrary(object):
         else:
             raise AssertionError("'%s' should have caused an error."
                                  % expression)
+
+    def print_output(self, output):
+        """
+        This function prints all values for the "message" field in the response structure
+
+        Parameters:
+        arg1 (list of dicts): Response structure returned from GDBMI response
+        """
+        for i in output:
+            print("Message: " + str(i['message']))
+
+    def get_addr_of_var(self, _gdbmi, variable):
+        """
+        This returns the memory address of a variable passed in. This assumes the variable is in scope 
+        at the time of execution
+
+        Parameters: Variable name to get the address of
+
+        Returns: String of the memory address
+        """
+        _response = _gdbmi.write("print &" + variable)
+        output = self.get_payloads(_response)
+        output = output.split("=",1)[1].split()
+        output = [i for i in output if i.startswith('0x')]
+        return output[0]
+
+    def get_payloads(self, _response):
+        """
+        Iterate through response and pull the all of the "none" payloads out
+
+        It seems the "none" payloads contain a lot of the information after a watch-point is hit.
+        This may not be a long term function or need additional parameters for the types of payloads
+        to get, such as "none" or "stopped" etc.
+        """
+        retr_val = ""
+        for i in _response:
+            if str(i['message']) == "None":
+                retr_val += i['payload']
+        return retr_val
+
+    def set_input(self, _gdbmi, _addr_of_input, _addr_of_flag, value):
+        """
+        This will set the variable input to the value passed and set the flag to 0 to release the Calculator
+        """
+        print("\n######\nset Input (hardcoded address)\n")
+        response = _gdbmi.write("-gdb-set *((char*) " + str(_addr_of_input) + ") = " + str(value))
+        pprint(response)
+        print("\n######\nprint input\n")
+        response = _gdbmi.write("print input")
+        pprint(response)
+
+        # Set flag to 0 to indicate Calculator can continue
+        response = _gdbmi.write("-gdb-set *((_Bool *) " + str(_addr_of_flag) + ") = 0")
+        pprint(response)
