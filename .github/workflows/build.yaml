@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          projectBaseDir: /home/runner/work/Calculator/Calculator
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           
       - name: Building
