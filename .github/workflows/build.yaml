@@ -19,11 +19,8 @@ jobs:
           
     - name: Building
       run: |
-        echo $PWD
-        ls
         cd ${{ github.workspace }}
-        ls
-        build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory make clean all    
+        ./build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory make clean all    
       
   sonarcloud:
     name: SonarCloud
