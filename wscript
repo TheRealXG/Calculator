@@ -29,17 +29,7 @@ def build(bld):
     rtems.build(bld)
 
     bld(features = 'c cprogram',
-        target = 'rtems/calc.exe',
+        target = 'hello.exe',
         cflags = '-g -O2',
-	includes = 'gen man',
-        source = ['man/main.c',
-		'man/init.c',
-		'man/memcpy.c',
-		'man/printUtils.c',
-		'gen/kcg_types.c',
-		'gen/root_Calc.c',
-		'gen/kcg_consts.c',
-		'gen/key2Char_Calc.c',
-		'gen/valueEntry_Calc.c',
-		'gen/performFunction_Calc.c',
-                'gen/updateDisplay_Calc_Utils.c'])
+        source = ['hello.c',
+                  'init.c'])
