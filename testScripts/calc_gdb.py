@@ -36,6 +36,7 @@ def main():
 	# Get the memory addresses of the relevant variables (input and flag to restart the Calculator)
 	addr_of_input = get_addr_of_var(gdbmi, "input")
 	addr_of_flag = get_addr_of_var(gdbmi, "flag")
+	addr_of_output = get_addr_of_var(gdbmi, "outC.outputDisplay")
 	# Set the first input value
 	set_input(gdbmi, addr_of_input, addr_of_flag, "53")
 	
@@ -58,9 +59,19 @@ def main():
 						if (str(values[0]) == "false" and str(values[1]) == "true"):
 							# Modify input value to equal "5" (ASCII 53)
 							set_input(gdbmi, addr_of_input, addr_of_flag, "53")
+							response = gdbmi.write("print outC.outputDisplay")
+							print("\n#####\nPrint outC\n")
+							print(get_output(response))
 		response = gdbmi.write("-exec-continue")
 		pprint(response)
 
+def is_error(_response):
+	"""Determines if there is an error in the response. Returns True if there was an error
+	"""
+	for i in _response:
+		if str(i['message']) == "error":
+			return True
+	return False
 
 def set_input(_gdbmi, _addr_of_input, _addr_of_flag, value):
 	"""
@@ -105,6 +116,12 @@ def get_addr_of_var(_gdbmi, variable):
 	output = [i for i in output if i.startswith('0x')]
 	return output[0]
 
+def get_output(_response):
+	"""This will extract the outC.outputDisplay value from a GDB response that called "print outC.outputDisplay"
+	"""
+	output = get_payloads(_response).split('\\')
+	output = [i for i in output if i.startswith('"')]
+	return output[0][1:]
 
 
 def get_old_new_value(_response):

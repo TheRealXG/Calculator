@@ -25,7 +25,6 @@ Add 2 Values
     Press Button    =
     Result should be    3
 
-*** Comments ***
 2 Digit Random Values
     ${val_1} =    Generate Random String    2    [NUMBERS]
     ${op} =    Generate Random String    1    +-*/

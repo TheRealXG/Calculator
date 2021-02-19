@@ -54,7 +54,7 @@ class CalculatorLibrary(object):
         response = self.gdbmi.write("-target-select remote localhost:1234")
         self.print_output(response)
 
-        # Create the watchpoing on the flag to know when to modify Input
+        # Create the watchpoint on the flag to know when to modify Input
         print("\n######\n-break-watch flag\n")
         response = self.gdbmi.write("-break-watch flag")
         watchpoint_flag = response[0]['payload']['wpt']['number']
@@ -87,6 +87,9 @@ class CalculatorLibrary(object):
         self.set_input(self.gdbmi, self.addr_of_input, self.addr_of_flag, ord(value))
     
         self.response = self.gdbmi.write("-exec-continue")
+        print(self.response)
+        # Check if command errors
+        self.is_error(self.response)
         
         # TODO Do we need to check this output to see if we got to a watchpoint? Or do this before button and run more exec-continues until getting there?
 
@@ -122,6 +125,15 @@ class CalculatorLibrary(object):
         Example:
         | Result should be | 3 |
         """
+        self.response = self.gdbmi.write("print outC.outputDisplay")
+        print(self.response)
+        self._result = str(self.get_output(self.response))
+        #if str(expected) == self._result:
+        #    return self._result
+        #else:   
+        #    raise AssertionError('%s != %s' % (self._result, expected))
+        #TODO Check for invalid input
+
         wait_for_prompt = True
         while wait_for_prompt:
             output = self.process.stdout.readline()
@@ -129,9 +141,9 @@ class CalculatorLibrary(object):
             if self.prompt_display in output:
                 print(output.strip())
                 # Parse output on spaces to get final entry in line
-                output_parsed = output.split()
+                #output_parsed = output.split()
                 # Get last element in list and remove "." from end
-                self._result = str(output_parsed[-1])
+                #self._result = str(output_parsed[-1])
                 # Compare if the value is as expected, if not raise an error
                 if str(expected) == self._result:
                     return self._result
@@ -206,11 +218,28 @@ class CalculatorLibrary(object):
         """
         print("\n######\nset Input (hardcoded address)\n")
         response = _gdbmi.write("-gdb-set *((char*) " + str(_addr_of_input) + ") = " + str(value))
+        self.is_error(response)
         pprint(response)
         print("\n######\nprint input\n")
         response = _gdbmi.write("print input")
+        self.is_error(response)
         pprint(response)
 
         # Set flag to 0 to indicate Calculator can continue
         response = _gdbmi.write("-gdb-set *((_Bool *) " + str(_addr_of_flag) + ") = 0")
+        self.is_error(response)
         pprint(response)
+
+    def get_output(self, _response):
+        """This will extract the outC.outputDisplay value from a GDB response that called "print outC.outputDisplay"
+        """
+        output = self.get_payloads(_response).split('\\')
+        output = [i for i in output if i.startswith('"')]
+        return output[0][1:]
+
+    def is_error(self, _response):
+        """Determines if there is an error in the response. Returns True if there was an error
+        """
+        for i in _response:
+            if str(i['message']) == "error":
+                raise AssertionError('Error in GDB Response')
