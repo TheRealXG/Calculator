@@ -1,6 +1,11 @@
 #This is a test script to interact with GDB to set a breakpoint and wait 
 # 10sec for a response from the Calculator console.
 # NOTE: This requires calc.exe to be compiled WITHOUT -02 or other optimization flags
+# To run this, execute QQEMU in one terminal window, like:
+# qemu-system-arm -net none -no-reboot -nographic -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe -s
+# Then in another temrinal window, run:
+# python3 testScripts/calc_gdb.py
+# This will repeatedly input a "5" to the calculator. This is testing the ability to interact via GDB
 from pygdbmi.gdbcontroller import GdbController
 from pygdbmi.constants import GdbTimeoutError
 from pprint import pprint

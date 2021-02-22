@@ -83,6 +83,7 @@ class CalculatorLibrary(object):
         | Press Button | + |
         """
 
+        #TODO Future robustness would be to check that the right watchpoint was hit (compare against watchpoint_flag)
         # Execute GDB commands to place input into memory and start the Calculator executing
         self._set_input(self.gdbmi, self.addr_of_input, self.addr_of_flag, ord(value))
     
@@ -90,8 +91,6 @@ class CalculatorLibrary(object):
         # Check if command errors
         self._is_error(self.response)
         
-        # TODO Do we need to check this output to see if we got to a watchpoint? Or do this before button and run more exec-continues until getting there?
-
         # Use the following to print the Input Value lines to the console for logging purposes
         wait_for_prompt = True
         while wait_for_prompt:
@@ -124,11 +123,6 @@ class CalculatorLibrary(object):
         """
         self.response = self.gdbmi.write("print outC.outputDisplay")
         self._result = str(self._get_output(self.response))
-        #if str(expected) == self._result:
-        #    return self._result
-        #else:   
-        #    raise AssertionError('%s != %s' % (self._result, expected))
-        #TODO Check for invalid input
 
         wait_for_prompt = True
         while wait_for_prompt:
