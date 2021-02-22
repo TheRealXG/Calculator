@@ -10,7 +10,7 @@ Documentation     Example test case using the gherkin syntax.
 ...               [http://cukes.info|Cucumber]. It works well especially when
 ...               tests act as examples that need to be easily understood also
 ...               by the business people.
-Library           CalculatorLibrary.py
+Library           CalculatorLibrary.py  "build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe"
 Test Setup        Start Process
 Test Teardown     Close Streams
 

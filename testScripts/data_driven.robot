@@ -10,7 +10,7 @@ Documentation     Example test cases using the data-driven testing approach.
 ...               turn uses keywords in ``CalculatorLibrary.py``. An exception
 ...               is the last test that has a custom _template keyword_.
 Test Template     Calculate
-Library           CalculatorLibrary.py
+Library           CalculatorLibrary.py  "build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe"
 Test Setup        Start Process
 Test Teardown     Close Streams
 

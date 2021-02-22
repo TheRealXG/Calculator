@@ -75,7 +75,7 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better.  
 To generate Robot Custom Library documentation:  
-	`python3 -m robot.libdoc testScripts/CalculatorLibrary.py doc/calc_Lib.html`  
+	`python3 -m robot.libdoc testScripts/CalculatorLibrary.py::"" doc/calc_Lib.html`  
 To generate HTML documentation on Test Cases:  
 	`python3 -m robot.testdoc testScripts/*.robot doc/test_Doc.html`
 

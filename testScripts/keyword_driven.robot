@@ -10,14 +10,12 @@ Documentation     Example test cases using the keyword-driven testing approach.
 ...               if also business people need to understand tests. If the
 ...               same workflow needs to repeated multiple times, it is best
 ...               to use to the _data-driven_ approach.
-Library           CalculatorLibrary.py
+Library           CalculatorLibrary.py  "build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe"
 Library           String
 Test Setup        Start Process
 Test Teardown     Close Streams
 
 *** Test Cases ***
-
-
 Add 2 Values
     Press Button    1
     Press Button    +

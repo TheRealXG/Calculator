@@ -9,6 +9,8 @@ class CalculatorLibrary(object):
     """Library for testing the Ansys *Calculator* App running in QEMU.
 
     This library interacts with the Console running QEMU to provide input, "Press Buttons" and read output to verify functionality.
+
+    Parameters: Pass in the file path to the executable with reference to where the test script is called.
     """
     prompt = "Input value" #"Press Button"
     prompt_display = "Display Output"
@@ -16,17 +18,21 @@ class CalculatorLibrary(object):
     #Global variable for GDBMI responses for functions to access
     response = ""
 
-    def __init__(self):
-        """Method run at instantiation of Python object, simply initializes results to ''
+    def __init__(self, path):
+        """Method run at instantiation of Python object.
+
+        Paramters:  
+        arg1: Sets path to executable to debug, with respect to the location the tests will be run from.
         """
         self._result = ''
+        self.file_path = path
 
 
     def start_process(self):
         """Setup method to start QEMU process.
         """
-        file_path = "build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe"
-        qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel " + file_path + " -s")
+        #file_path = "build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe"
+        qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel " + self.file_path + " -s")
         self.process= subprocess.Popen(qemu_cmd,
                         stdin =subprocess.PIPE,
                         stdout=subprocess.PIPE,
@@ -45,28 +51,18 @@ class CalculatorLibrary(object):
         self.gdbmi = GdbController(["arm-rtems5-gdb", "--nx", "--quiet", "--interpreter=mi3"])
 
         # Load binary
-        print("\n######\n-file-exec-and-symbols build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe\n")
-        response = self.gdbmi.write("-file-exec-and-symbols " + file_path)
-        self.print_output(response)
+        response = self.gdbmi.write("-file-exec-and-symbols " + self.file_path)
 
         # Connect to the remote host 
-        print("\n######\n-target-select remote localhost:1234\n")
         response = self.gdbmi.write("-target-select remote localhost:1234")
-        self.print_output(response)
 
         # Create the watchpoint on the flag to know when to modify Input
-        print("\n######\n-break-watch flag\n")
         response = self.gdbmi.write("-break-watch flag")
         watchpoint_flag = response[0]['payload']['wpt']['number']
-        self.print_output(response)
-        print("Watchpoint #: " + str(response[0]['payload']['wpt']['number']))
-        pprint(response)
 
         # Get the memory addresses of the relevant variables (input and flag to restart the Calculator)
-        self.addr_of_input = self.get_addr_of_var(self.gdbmi, "input")
-        self.addr_of_flag = self.get_addr_of_var(self.gdbmi, "flag")
-        print(self.addr_of_input)
-        print(self.addr_of_flag)
+        self.addr_of_input = self._get_addr_of_var(self.gdbmi, "input")
+        self.addr_of_flag = self._get_addr_of_var(self.gdbmi, "flag")
         
 
     def close_Streams(self):
@@ -88,14 +84,11 @@ class CalculatorLibrary(object):
         """
 
         # Execute GDB commands to place input into memory and start the Calculator executing
-        print("Set Input")
-        self.set_input(self.gdbmi, self.addr_of_input, self.addr_of_flag, ord(value))
+        self._set_input(self.gdbmi, self.addr_of_input, self.addr_of_flag, ord(value))
     
-        print("Continue")
         self.response = self.gdbmi.write("-exec-continue")
-        print(self.response)
         # Check if command errors
-        self.is_error(self.response)
+        self._is_error(self.response)
         
         # TODO Do we need to check this output to see if we got to a watchpoint? Or do this before button and run more exec-continues until getting there?
 
@@ -106,8 +99,6 @@ class CalculatorLibrary(object):
 
             if self.prompt in output:
                 print(output.strip())
-                #output = self.process.stdout.readline()
-                #print(output.strip())
                 wait_for_prompt = False
             else:
                 print(output.strip())
@@ -122,9 +113,7 @@ class CalculatorLibrary(object):
         | Press Buttons | 1+2 |
         | Press Buttons | 1.5 + 2 |
         """
-        print("In press_buttons")
         for value in values.replace(' ', ''):
-            print("press a button")
             self.press_button(value)
 
     def result_should_be(self, expected):
@@ -134,8 +123,7 @@ class CalculatorLibrary(object):
         | Result should be | 3 |
         """
         self.response = self.gdbmi.write("print outC.outputDisplay")
-        print(self.response)
-        self._result = str(self.get_output(self.response))
+        self._result = str(self._get_output(self.response))
         #if str(expected) == self._result:
         #    return self._result
         #else:   
@@ -172,19 +160,16 @@ class CalculatorLibrary(object):
         This would return ``Invalid Input``
         """
         try:
-            print("Push Buttons")
             self.press_buttons(expression)
-            print("Pushed Buttons")
             # Check if it accepts the input and shows prompt display or Errors out 
             #self.result_should_be(prompt_display)
         except:
-            print("Unexpected error:", sys.exc_info()[0])
             return str("Invalid Input")
         else:
             raise AssertionError("'%s' should have caused an error."
                                  % expression)
 
-    def print_output(self, output):
+    def _print_output(self, output):
         """
         This function prints all values for the "message" field in the response structure
 
@@ -194,7 +179,7 @@ class CalculatorLibrary(object):
         for i in output:
             print("Message: " + str(i['message']))
 
-    def get_addr_of_var(self, _gdbmi, variable):
+    def _get_addr_of_var(self, _gdbmi, variable):
         """
         This returns the memory address of a variable passed in. This assumes the variable is in scope 
         at the time of execution
@@ -204,12 +189,12 @@ class CalculatorLibrary(object):
         Returns: String of the memory address
         """
         _response = _gdbmi.write("print &" + variable)
-        output = self.get_payloads(_response)
+        output = self._get_payloads(_response)
         output = output.split("=",1)[1].split()
         output = [i for i in output if i.startswith('0x')]
         return output[0]
 
-    def get_payloads(self, _response):
+    def _get_payloads(self, _response):
         """
         Iterate through response and pull all of the "none" payloads out
 
@@ -221,32 +206,27 @@ class CalculatorLibrary(object):
                 retr_val += i['payload']
         return retr_val
 
-    def set_input(self, _gdbmi, _addr_of_input, _addr_of_flag, value):
+    def _set_input(self, _gdbmi, _addr_of_input, _addr_of_flag, value):
         """
         This will set the variable input to the value passed and set the flag to 0 to release the Calculator
         """
-        print("\n######\nset Input (hardcoded address)\n")
         response = _gdbmi.write("-gdb-set *((char*) " + str(_addr_of_input) + ") = " + str(value))
-        self.is_error(response)
-        pprint(response)
-        print("\n######\nprint input\n")
+        self._is_error(response)
         response = _gdbmi.write("print input")
-        self.is_error(response)
-        pprint(response)
+        self._is_error(response)
 
         # Set flag to 0 to indicate Calculator can continue
         response = _gdbmi.write("-gdb-set *((_Bool *) " + str(_addr_of_flag) + ") = 0")
-        self.is_error(response)
-        pprint(response)
+        self._is_error(response)
 
-    def get_output(self, _response):
+    def _get_output(self, _response):
         """This will extract the outC.outputDisplay value from a GDB response that called "print outC.outputDisplay"
         """
-        output = self.get_payloads(_response).split('\\')
+        output = self._get_payloads(_response).split('\\')
         output = [i for i in output if i.startswith('"')]
         return output[0][1:]
 
-    def is_error(self, _response):
+    def _is_error(self, _response):
         """Determines if there is an error in the response. Returns True if there was an error
         """
         for i in _response:
