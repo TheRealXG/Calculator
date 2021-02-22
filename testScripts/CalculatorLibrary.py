@@ -72,8 +72,12 @@ class CalculatorLibrary(object):
     def close_Streams(self):
         """Teardown method to ensure QEMU is quit and not left as a zombie process. Close STDIN stream.
         """
-        self.press_button("q")
-        self.process.stdin.close()
+        try:
+            if self.process.poll() is None:
+                self.press_button("q")
+                self.process.stdin.close()
+        except:
+            print("Unexpected error:", sys.exc_info()[0])   
 
     def press_button(self, value):
         """Enters the value or operator, passed in, to the calculator.
@@ -84,8 +88,10 @@ class CalculatorLibrary(object):
         """
 
         # Execute GDB commands to place input into memory and start the Calculator executing
+        print("Set Input")
         self.set_input(self.gdbmi, self.addr_of_input, self.addr_of_flag, ord(value))
     
+        print("Continue")
         self.response = self.gdbmi.write("-exec-continue")
         print(self.response)
         # Check if command errors
@@ -116,7 +122,9 @@ class CalculatorLibrary(object):
         | Press Buttons | 1+2 |
         | Press Buttons | 1.5 + 2 |
         """
+        print("In press_buttons")
         for value in values.replace(' ', ''):
+            print("press a button")
             self.press_button(value)
 
     def result_should_be(self, expected):
@@ -164,10 +172,13 @@ class CalculatorLibrary(object):
         This would return ``Invalid Input``
         """
         try:
-            self.push_buttons(expression)
+            print("Push Buttons")
+            self.press_buttons(expression)
+            print("Pushed Buttons")
             # Check if it accepts the input and shows prompt display or Errors out 
-            self.result_should_be(prompt_display)
+            #self.result_should_be(prompt_display)
         except:
+            print("Unexpected error:", sys.exc_info()[0])
             return str("Invalid Input")
         else:
             raise AssertionError("'%s' should have caused an error."
@@ -200,11 +211,9 @@ class CalculatorLibrary(object):
 
     def get_payloads(self, _response):
         """
-        Iterate through response and pull the all of the "none" payloads out
+        Iterate through response and pull all of the "none" payloads out
 
         It seems the "none" payloads contain a lot of the information after a watch-point is hit.
-        This may not be a long term function or need additional parameters for the types of payloads
-        to get, such as "none" or "stopped" etc.
         """
         retr_val = ""
         for i in _response:

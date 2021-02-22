@@ -53,10 +53,11 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 	`qemu-system-arm -net none -no-reboot -nographic -M realview-pbx-a9 -m 256M -kernel $GIT_REPO/build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe`
 
 # Test
-1. This branch is setup to use the Robot Test Framework for testing which first needs installed  
+1. This branch is setup to use the Robot Test Framework and the GDB interface with a Python library for testing which first need installed  
 	(Assuming Python 3 is already installed)  
 	`pip3 install robotframework`  
 	`pip3 install docutils`  
+	`pip3 install pygdbmi`
 2. In the main Calculator folder execute  
 	`robot testScripts/keyword_driven.robot`  
 	This will run 7 basic test cases (4P/3F) and report the results to the command line. Test details can be viewed by opening `log.html`  
@@ -74,9 +75,9 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better.  
 To generate Robot Custom Library documentation:  
-	`python3 -m robot.libdoc testScripts/CalculatorLibrary.py Calc_Lib.html`  
+	`python3 -m robot.libdoc testScripts/CalculatorLibrary.py doc/calc_Lib.html`  
 To generate HTML documentation on Test Cases:  
-	`python3 -m robot.testdoc testScripts/*.robot test_Doc.html`
+	`python3 -m robot.testdoc testScripts/*.robot doc/test_Doc.html`
 
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
 - [ASP.NET Core](https://github.com/aspnet/Home)
