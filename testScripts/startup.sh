@@ -4,7 +4,7 @@
 export QEMU_AUDIO_DRV="none"
 
 #change to mounted git repository directory
-cd /volume
+cd $SRC_VOL
 
 #configure waf to build exe with correct rtems dir and BSP / then build
 ./waf configure --rtems=/rtems/quick-start/rtems/5 --rtems-bsp=arm/realview_pbx_a9_qemu
