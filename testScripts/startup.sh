@@ -26,5 +26,8 @@ robot --xunit results testScripts/.
 #Copy all results back to \volume before exiting Docker
 #cp -fR . /volume
 
+# Clean up
+git clean -xdf
+
 #debug statements
 echo "Startup.sh script was ran." >> $SRC_VOL/log.txt
