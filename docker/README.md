@@ -21,6 +21,8 @@ Docker run flags used:
 
 /bin/bash is used on the end of the run command to start an interactive bash session
 
+D:\docker\RTEMS\volume is the local folder on the host, which is attached to the container as /volume.  In these examples, the host folder contains the sorce code downloaded from this git repo.
+
 In the pipeline, there is a CMD line at the end of the Dockerfile that will execute a bash script to control operations in the container.
 Currently this start.sh script calls another script, startup.sh which is kept in source control, so it can be customized to fit needs.
 This is the command to start the container in the pipeline:
