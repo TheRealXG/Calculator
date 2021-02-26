@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ -z "${SRC_VOL}"]]; then
-    export SRC_VOL="/volume"
+if [ -z "$SRC_VOL" ]; then
+  export SRC_VOL="/volume"
 fi
 
 #set QEMU_AUDIO_DRV to none to get rid of nag 
@@ -19,4 +19,4 @@ cd $SRC_VOL
 robot --xunit results testScripts/.
 
 #debug statements
-echo "Startup.sh script was ran." >> /volume/log.txt
+echo "Startup.sh script was ran." >> $SRC_VOL/log.txt
