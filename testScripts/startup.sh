@@ -21,4 +21,4 @@ robot --xunit results testScripts/.
 cp -fR . /volume
 
 #debug statements
-echo "Startup.sh script was ran." >> /home/jimbrewer/myagent/_work/1/s/log.txt
+echo "Startup.sh script was ran." >> /volume/log.txt
