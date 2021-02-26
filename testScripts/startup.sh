@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [[ -z "${SRC_VOL}"]]; then
+    export SRC_VOL="/volume"
+fi
+
 #set QEMU_AUDIO_DRV to none to get rid of nag 
 export QEMU_AUDIO_DRV="none"
 
