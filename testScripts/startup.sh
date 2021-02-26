@@ -13,7 +13,7 @@ cd $SRC_VOL
 
 #configure waf to build exe with correct rtems dir and BSP / then build
 ./waf configure --rtems=/rtems/quick-start/rtems/5 --rtems-bsp=arm/realview_pbx_a9_qemu
-build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir sonarcloud ./waf clean build
+build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory ./waf clean build
 
 
 #Run the Robot test framework on all *.robot files in testScripts. Output in main Calculator folder.
