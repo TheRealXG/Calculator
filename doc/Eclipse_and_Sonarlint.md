@@ -32,11 +32,11 @@ See issues highlighted in source code with light blue or red "squiggly". Click o
 Under Window->Show View->Other->SonarLint you can see other view options that will show in the Perspective.  
 
 * SonarLint Report  
-	Right-click the project in the side-bar and select SonarLint->Analzye, or Analyze Changed Files. Based on the exclusion list configured above (this may need to change as the project changes), this will produce a report of findings. It seems this will sometimes find more items than seen on the server. This will show findings from local analysis, it is not showing server analysis.  
+	Right-click the project in the side-bar and select SonarLint->Analzye, or Analyze Changed Files. BThis will produce a report of findings. It seems this will sometimes find more items than seen on the server. This will show findings from local analysis, it is not showing server analysis. For some reason it has some issues thinking files are CPP rather than C files. Attempted to fix by ensuring the "Project Nature" in Eclipse didn't include C++. Also in Project Settings under C/C++ General->File Types changed to use Project Settings and explicitly specify that \*.c is a C source file and \*.h is a C header file. This worked for other people, but didn't seem to help this issue. Was able to change the Quality Profile on Sonarcloud to disable C++ rules and the issue went away after updating the binding, though this is a bit of a work around. There were still a few extra findings for some unknown reason. After this there were only 2 remaining additional findings locally than remotely.  
 	
 	Occasionally a warning comes up saying some rules cannot be analyzed, but it does not give more detail on how to fix this.  
 	 
-	Theoretically with Remote Binding it will not show "Won't Fix" issues if it works (this appears to NOT be working right now, so even "Won't Fix" items are shown.)  
+	Theoretically with Remote Binding it will not show "Won't Fix" issues if it works.  
 
 
 * SonarLint On The Fly  
