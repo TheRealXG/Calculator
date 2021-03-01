@@ -18,7 +18,7 @@ build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir build_wrapper_outpu
 # This path is dictated by the command line in the pipeline to download and extract the sonar-scanner
 export PATH=$PATH:$SRC_VOL/sonar/bin
 # Pass in the Git Branch name (provided by Azure) being processed for Sonarcloud to track from
-if [$GIT_BRANCH = 'master']
+if [ $GIT_BRANCH = "master" ]
 then
 	sonar-scanner -Dsonar.login=$SC_AUTH
 else
