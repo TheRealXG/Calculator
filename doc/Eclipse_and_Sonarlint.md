@@ -23,15 +23,7 @@ Click Next several times and then Finish
 5. Select Projects to Bind.
 6. Click "Add" and choose Calculator (double click)
 7. Click Next, ensure it matches with the correct Sonarcloud Project, then Finish  
-Under the SonarLint Bindings view, you can right-click on SonarCloud and select `Update All Project Bindings` to update settings from the server.  
-
-With the project selected, choose Project->Properties->SonarLint->File Exclusions  
-	Click New..., select Directory and Select..., then choose a folder to exclude. Repeat for all folders EXCEPT:  
-		`man/`  
-		`gen/`  
-	Also, add new Rules by selecting GLOB and adding the following rules (or more if results for undesired files appear):  
-		`*.html`  
-		`*.xml`  
+Under the SonarLint Bindings view, you can right-click on SonarCloud and select `Update All Project Bindings` to update settings from the server (such as which files to include in analysis).  
 
 
 See issues highlighted in source code with light blue or red "squiggly". Click on that text and see the context menu showing the issue. You can click on options to see the issue elsewhere and to see a rule description to show the preferred method of implementation.
