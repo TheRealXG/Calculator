@@ -17,7 +17,8 @@ build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir build_wrapper_outpu
 # Add to path and execute Sonarcloud Scan (This is downloaded in the pipeline. Should it be in Docker instead?)
 # This path is dictated by the command line in the pipeline to download and extract the sonar-scanner
 export PATH=$PATH:$SRC_VOL/sonar/bin
-sonar-scanner -Dsonar.login=$SC_AUTH
+# Pass in the Git Branch name (provided by Azure) being porcessed for Sonarcloud to track from 
+sonar-scanner -Dsonar.login=$SC_AUTH -Dsonar.branch.name=$GIT_BRANCH
 
 #Run the Robot test framework on all *.robot files in testScripts. Output in main Calculator folder.
 robot --xunit results testScripts/.
