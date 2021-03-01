@@ -22,7 +22,7 @@ if [ $GIT_BRANCH = "master" ]
 then
 	sonar-scanner -Dsonar.login=$SC_AUTH
 else
-	sonar-scanner -Dsonar.login=$SC_AUTH -Dsonar.branch.name=$GIT_BRANCH
+	sonar-scanner -Dsonar.login=$SC_AUTH -Dsonar.branch.target=master -Dsonar.branch.name=$GIT_BRANCH
 fi
 
 #Run the Robot test framework on all *.robot files in testScripts. Output in main Calculator folder.
