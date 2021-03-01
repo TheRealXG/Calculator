@@ -76,14 +76,15 @@ void root_Calc(inC_root_Calc *inC, outC_root_Calc *outC)
       if (tr_1_clock_EnterValue1_SM1) {
         SM1_state_act = SSM_st_EnterValue1_SM1;
       }
-      else /* SM1:EnterValue1:<2> */
-      if (tr_2_guard_EnterValue1_SM1) {
-        SM1_state_act = SSM_st_StoreFunction_SM1;
-        outC->storedValue = outC->entryValue;
-        outC->storedFunction = inC->keyEvent;
-      }
-      else {
-        SM1_state_act = SSM_st_EnterValue1_SM1;
+      else {/* SM1:EnterValue1:<2> */
+        if (tr_2_guard_EnterValue1_SM1) {
+          SM1_state_act = SSM_st_StoreFunction_SM1;
+          outC->storedValue = outC->entryValue;
+          outC->storedFunction = inC->keyEvent;
+        }
+        else {
+          SM1_state_act = SSM_st_EnterValue1_SM1;
+        }
       }
       break;
     default :
