@@ -1,8 +1,13 @@
 #!/bin/bash
 
+if [ -z "$SRC_VOL" ]; then
+  export SRC_VOL="/volume"
+fi
+
 #set QEMU_AUDIO_DRV to none to get rid of nag 
 export QEMU_AUDIO_DRV="none"
 
+#change to mounted git repository directory
 cd $SRC_VOL
 
 #configure waf to build exe with correct rtems dir and BSP / then build
