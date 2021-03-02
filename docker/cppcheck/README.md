@@ -23,7 +23,7 @@ In the pipeline, there is a CMD line at the end of the Dockerfile that will exec
 Currently this start.sh script calls another script, run\_cppcheck.sh which is kept in source control, so it can be customized to fit needs. This is intended to run cppcheck against source code and output the results to /volume.  
 This is the command to start the container in the pipeline:  
 
-  `docker run -v $(Build.SourcesDirectory):/volume cppcheck``
+  `docker run -v $(Build.SourcesDirectory):/volume cppcheck`
 
 # Contribute
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
