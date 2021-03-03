@@ -2,7 +2,7 @@ resources:
   repositories:
   - repository: XG_Github # The name used to reference this repository in the checkout step
     type: github
-    endpoint: MyGitHubServiceConnection
+    endpoint: TheRealXG
     name: therealxg/Calculator
     ref: build_container
 
