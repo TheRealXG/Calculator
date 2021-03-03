@@ -33,7 +33,7 @@ steps:
   displayName: 'Sonarcloud Build Wrapper and Scanner Setup'
 
 - script: |
-   echo "starting" >> log.txt
+   echo "starting" >> $(Build.SourcesDirectory)/log.txt
    docker pull therealxg/azure_pipeline:build_app
    docker run --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/RTEMS:$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:build_app
    cat $(Build.SourcesDirectory)/log.txt
