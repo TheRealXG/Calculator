@@ -39,6 +39,26 @@ steps:
     scannerMode: 'CLI'
     configMode: 'file'
 
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'sonar'
+    organization: 'therealxg'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'TheRealXG_Calculator'
+    cliProjectName: 'Calculator'
+    cliProjectVersion: '1.1'
+    cliSources: 'man/,gen/'
+    extraProperties: |
+      # Additional properties that will be passed to the scanner, 
+      # Put one key=value per line, example:
+      # sonar.exclusions=**/*.bin
+      sonar.cfamily.build-wrapper-output=build_wrapper_output_directory
+      sonar.sourceEncoding=UTF-8
+      sonar.cfamily.cache.enabled=false
+      sonar.cfamily.threads=2
+      sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
+
 - script: |
    echo "starting" >> $(Build.SourcesDirectory)/log.txt
    docker pull therealxg/azure_pipeline:build_app
