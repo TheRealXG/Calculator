@@ -1,6 +1,6 @@
 resources:
   repositories:
-  - repository: XG_Github # The name used to reference this repository in the checkout step
+  - repository: XG_Github
     type: github
     endpoint: TheRealXG
     name: therealxg/Calculator
@@ -10,6 +10,7 @@ pool:
   name: Ubuntu 20.10 VM
 steps:
 - checkout: XG_Github
+- checkout: git://Hardware%20Emulation/RTEMS@refs/tags/realview_pbx_a9_qemu
 
 - task: DockerInstaller@0
   displayName: 'Install Docker 17.09.0-ce'
@@ -32,10 +33,8 @@ steps:
 
 - script: |
    echo "starting" >> log.txt
-   docker pull ahouse13/rtems:latest
-   docker run -e SRC_VOL=$(Build.SourcesDirectory) -e SC_AUTH=7d11a919ede8fdb385deacdf269a5c8ec53fcaea -e GIT_BRANCH=$(Build.SourceBranchName) -v $(Build.SourcesDirectory):$(Build.SourcesDirectory) ahouse13/rtems:latest
+   docker pull therealxg/azure_pipeline:build_app
+   docker run --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/rtems -v $(Build.SourcesDirectory)/rtems:$(Build.SourcesDirectory)/rtems -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator build_app
    cat $(Build.SourcesDirectory)/log.txt
-   cat $(Build.SourcesDirectory)/results.txt
-   cat $(Build.SourcesDirectory)/results.xml
-  displayName: 'Launch Docker Container'
+  displayName: 'Launch Docker Build Container'
 
