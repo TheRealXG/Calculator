@@ -1,0 +1,41 @@
+resources:
+  repositories:
+  - repository: XG_Github # The name used to reference this repository in the checkout step
+    type: github
+    endpoint: MyGitHubServiceConnection
+    name: therealxg/Calculator
+    ref: build_container
+
+pool:
+  name: Ubuntu 20.10 VM
+steps:
+- checkout: XG_Github
+
+- task: DockerInstaller@0
+  displayName: 'Install Docker 17.09.0-ce'
+
+- task: Docker@2
+  displayName: login
+  inputs:
+    containerRegistry: docker
+    command: login
+
+- script: |
+   curl 'https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip' --output build-wrapper.zip
+   unzip -o build-wrapper.zip
+   curl 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-linux.zip' --output sonar.zip
+   unzip -o sonar.zip -d sonar
+   cd sonar
+   cd */.
+   mv * ../
+  displayName: 'Sonarcloud Build Wrapper and Scanner Setup'
+
+- script: |
+   echo "starting" >> log.txt
+   docker pull ahouse13/rtems:latest
+   docker run -e SRC_VOL=$(Build.SourcesDirectory) -e SC_AUTH=7d11a919ede8fdb385deacdf269a5c8ec53fcaea -e GIT_BRANCH=$(Build.SourceBranchName) -v $(Build.SourcesDirectory):$(Build.SourcesDirectory) ahouse13/rtems:latest
+   cat $(Build.SourcesDirectory)/log.txt
+   cat $(Build.SourcesDirectory)/results.txt
+   cat $(Build.SourcesDirectory)/results.xml
+  displayName: 'Launch Docker Container'
+
