@@ -75,19 +75,19 @@ steps:
   displayName: 'Publish Robot Test Results results.xml'
   inputs:
     testResultsFiles: results.xml
-    searchFolder: '$(Build.SourcesDirectory)'
+    searchFolder: '$(Build.SourcesDirectory)/Calculator'
   condition: succeededOrFailed()
 
 - task: PublishPipelineArtifact@1
   displayName: 'Publish Pipeline Artifact - Robot Report'
   inputs:
-    targetPath: '$(Build.SourcesDirectory)/report.html'
+    targetPath: '$(Build.SourcesDirectory)/Calculator/report.html'
     artifact: Report.html
   condition: succeededOrFailed()
 
 - task: PublishPipelineArtifact@1
   displayName: 'Publish Pipeline Artifact - Robot Log'
   inputs:
-    targetPath: '$(Build.SourcesDirectory)/log.html'
+    targetPath: '$(Build.SourcesDirectory)/Calculator/log.html'
     artifact: log.html
   condition: succeededOrFailed()
