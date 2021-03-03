@@ -8,7 +8,7 @@ Download and install Docker on a development computer - [Get Docker](https://doc
 1.	In the same directory as the Dockerfile, execute the following:  
 	`docker build -t build_app .`  
 2.	Then launch the container with:  
-	`docker run -ti --rm -v SRC_CODE:/volume rtems /bin/bash`
+	`docker run -ti --rm -v SRC_CODE:/volume build_app /bin/bash`
   
 # More Information
 Docker run flags used: 
@@ -27,7 +27,9 @@ In the pipeline, there is a CMD line at the end of the Dockerfile that will exec
 Currently this start.sh script calls another script, startup.sh which is kept in source control, so it can be customized to fit needs.
 This is the command to start the container in the pipeline:
 
-  `docker run --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/rtems -v $(Build.SourcesDirectory)/rtems:$(Build.SourcesDirectory)/rtems  -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator build_app`
+`docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/RTEMS:$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:build_app`  
+  
+This runs the Docker container as the agent user and passes in the source volume and RTEMS kernel and BSp as environment variables and mapped paths for access to the files and consistent paths for SonarCloud analysis.  
 
 # Contribute
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
