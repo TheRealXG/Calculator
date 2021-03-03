@@ -10,7 +10,7 @@ pool:
   name: Ubuntu 20.10 VM
 steps:
 - checkout: XG_Github
-- checkout: git@://naborfcortezciv/Hardware%20Emulation/RTEMS@refs/tags/realview_pbx_a9_qemu
+- checkout: git://naborfcortezciv/Hardware%20Emulation/RTEMS@refs/tags/realview_pbx_a9_qemu
 
 - task: DockerInstaller@0
   displayName: 'Install Docker 17.09.0-ce'
