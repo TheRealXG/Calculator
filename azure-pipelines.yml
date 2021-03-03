@@ -67,3 +67,10 @@ steps:
   displayName: 'Launch Docker Build Container'
 
 - task: SonarCloudAnalyze@1
+
+- script: |
+   echo "starting" >> $(Build.SourcesDirectory)/log.txt
+   docker pull therealxg/azure_pipeline:test_app
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:test_app
+   cat $(Build.SourcesDirectory)/log.txt
+  displayName: 'Launch Docker Test Container'
