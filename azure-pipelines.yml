@@ -32,6 +32,13 @@ steps:
    mv * ../
   displayName: 'Sonarcloud Build Wrapper and Scanner Setup'
 
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'sonar'
+    organization: 'therealxg'
+    scannerMode: 'CLI'
+    configMode: 'file'
+
 - script: |
    echo "starting" >> $(Build.SourcesDirectory)/log.txt
    docker pull therealxg/azure_pipeline:build_app
@@ -39,3 +46,4 @@ steps:
    cat $(Build.SourcesDirectory)/log.txt
   displayName: 'Launch Docker Build Container'
 
+- task: SonarCloudAnalyze@1
