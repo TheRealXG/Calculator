@@ -60,17 +60,34 @@ steps:
       sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
 
 - script: |
-   echo "starting" >> $(Build.SourcesDirectory)/log.txt
    docker pull therealxg/azure_pipeline:build_app
    docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/RTEMS:$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:build_app
-   cat $(Build.SourcesDirectory)/log.txt
   displayName: 'Launch Docker Build Container'
 
 - task: SonarCloudAnalyze@1
 
 - script: |
-   echo "starting" >> $(Build.SourcesDirectory)/log.txt
    docker pull therealxg/azure_pipeline:test_app
    docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:test_app
-   cat $(Build.SourcesDirectory)/log.txt
   displayName: 'Launch Docker Test Container'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Robot Test Results results.xml'
+  inputs:
+    testResultsFiles: results.xml
+    searchFolder: '$(Build.SourcesDirectory)'
+  condition: succeededOrFailed()
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - Robot Report'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/report.html'
+    artifact: Report.html
+  condition: succeededOrFailed()
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - Robot Log'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/log.html'
+    artifact: log.html
+  condition: succeededOrFailed()
