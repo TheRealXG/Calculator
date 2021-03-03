@@ -48,7 +48,7 @@ steps:
     cliProjectKey: 'TheRealXG_Calculator'
     cliProjectName: 'Calculator'
     cliProjectVersion: '1.1'
-    cliSources: 'Calculator/man/,Calculator/gen/'
+    cliSources: '.'
     extraProperties: |
       # Additional properties that will be passed to the scanner, 
       # Put one key=value per line, example:
