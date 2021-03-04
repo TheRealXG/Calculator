@@ -8,7 +8,7 @@ Download and install Docker on a development computer - [Get Docker](https://doc
 1.	In the same directory as the Dockerfile, execute the following:  
 	`docker build -t test_app .`  
 2.	Then launch the container with:  
-	`docker run -ti --rm -v SRC_VOL:/volume rtems /bin/bash`
+	`docker run -ti --rm -v SRC_VOL:/volume test_app /bin/bash`
   
 # More Information
 Docker run flags used: 
@@ -29,7 +29,7 @@ This is the command to start the container in the pipeline:
 
   `docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:test_app`
   
-This will run the Docker as the agent user and it will pass in the source volume on the agent as both an environemtn variable and a mapped volume for execution of the Robot tests cases.  
+This will run the Docker as the agent user and it will pass in the source volume on the agent as both an environment variable and a mapped volume for execution of the Robot tests cases.  
 # Contribute
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
 - [ASP.NET Core](https://github.com/aspnet/Home)

@@ -29,7 +29,7 @@ This is the command to start the container in the pipeline:
 
 `docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/RTEMS:$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:build_app`  
   
-This runs the Docker container as the agent user and passes in the source volume and RTEMS kernel and BSp as environment variables and mapped paths for access to the files and consistent paths for SonarCloud analysis.  
+This runs the Docker container as the agent user and passes in the source volume and RTEMS kernel and BSP as environment variables and mapped paths for access to the files and consistent paths for SonarCloud analysis.  
 
 # Contribute
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
