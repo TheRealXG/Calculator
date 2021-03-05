@@ -60,6 +60,25 @@ steps:
       sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
 
 - script: |
+   docker pull therealxg/azure_pipeline:static_analysis
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:static_analysis
+  displayName: 'Launch Docker Static Analysis Container'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - CPPCheck Log'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/Calculator/cpp_check_log.txt'
+    artifact: cpp_check_log.txt
+  condition: succeededOrFailed()
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - Flawfinder Log'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/Calculator/flawfinder_log.txt'
+    artifact: flawfinder_log.txt
+  condition: succeededOrFailed()
+
+- script: |
    docker pull therealxg/azure_pipeline:build_app
    docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/RTEMS:$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:build_app
   displayName: 'Launch Docker Build Container'
