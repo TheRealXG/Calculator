@@ -37,13 +37,6 @@ steps:
     SonarCloud: 'sonar'
     organization: 'therealxg'
     scannerMode: 'CLI'
-    configMode: 'file'
-
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'sonar'
-    organization: 'therealxg'
-    scannerMode: 'CLI'
     configMode: 'manual'
     cliProjectKey: 'TheRealXG_Calculator'
     cliProjectName: 'Calculator'
