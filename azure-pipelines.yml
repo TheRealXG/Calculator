@@ -52,6 +52,12 @@ steps:
       sonar.cfamily.threads=2
       sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
 
+
+- script: |
+   docker pull therealxg/azure_pipeline:unity
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:unity
+  displayName: 'Launch Docker Unit Test Container'
+
 - script: |
    docker pull therealxg/azure_pipeline:static_analysis
    docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:static_analysis
