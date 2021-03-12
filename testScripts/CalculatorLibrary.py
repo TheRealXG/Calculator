@@ -19,7 +19,7 @@ class CalculatorLibrary(object):
     def start_process(self):
         """Setup method to start QEMU process.
         """
-        qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel build/arm-rtems5-realview_pbx_a9_qemu/rtems/calc.exe")
+        qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel calc.exe")
         self.process= subprocess.Popen(qemu_cmd,
                         stdin =subprocess.PIPE,
                         stdout=subprocess.PIPE,

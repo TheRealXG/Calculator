@@ -1,0 +1,112 @@
+resources:
+  repositories:
+  - repository: XG_Github
+    type: github
+    endpoint: TheRealXG
+    name: therealxg/Calculator
+    ref: master
+
+pool:
+  name: Ubuntu 20.10 VM
+steps:
+- checkout: XG_Github
+- checkout: git://Hardware Emulation/RTEMS@refs/tags/realview_pbx_a9_qemu_rtems_51
+
+- task: DockerInstaller@0
+  displayName: 'Install Docker 17.09.0-ce'
+
+- task: Docker@2
+  displayName: login
+  inputs:
+    containerRegistry: dockerhub-realxg
+    command: login
+
+- script: |
+   cd $(Build.SourcesDirectory)/Calculator
+   curl 'https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip' --output build-wrapper.zip
+   unzip -o build-wrapper.zip
+   curl 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-linux.zip' --output sonar.zip
+   unzip -o sonar.zip -d sonar
+   cd sonar
+   cd */.
+   mv * ../
+  displayName: 'Sonarcloud Build Wrapper and Scanner Setup'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'sonar'
+    organization: 'therealxg'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'TheRealXG_Calculator'
+    cliProjectName: 'Calculator'
+    cliProjectVersion: '1.1'
+    cliSources: '.'
+    extraProperties: |
+      # Additional properties that will be passed to the scanner, 
+      # Put one key=value per line, example:
+      # sonar.exclusions=**/*.bin
+      sonar.cfamily.build-wrapper-output=Calculator/build_wrapper_output_directory
+      sonar.sourceEncoding=UTF-8
+      sonar.cfamily.cache.enabled=false
+      sonar.cfamily.threads=2
+      sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
+      sonar.cfamily.gcov.reportsPath=gcov/
+
+
+- script: |
+   docker pull therealxg/azure_pipeline:unity
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:unity
+  displayName: 'Launch Docker Unit Test Container'
+
+- script: |
+   docker pull therealxg/azure_pipeline:static_analysis
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:static_analysis
+  displayName: 'Launch Docker Static Analysis Container'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - CPPCheck Log'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/Calculator/cpp_check_log.txt'
+    artifact: cpp_check_log.txt
+  condition: succeededOrFailed()
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - Flawfinder Log'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/Calculator/flawfinder_log.txt'
+    artifact: flawfinder_log.txt
+  condition: succeededOrFailed()
+
+- script: |
+   docker pull therealxg/azure_pipeline:build_app
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -e RTEMS_PATH=$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/RTEMS:$(Build.SourcesDirectory)/RTEMS -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:build_app
+  displayName: 'Launch Docker Build Container'
+
+- task: SonarCloudAnalyze@1
+
+- script: |
+   docker pull therealxg/azure_pipeline:test_app
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:test_app
+  displayName: 'Launch Docker Test Container'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Robot Test Results results.xml'
+  inputs:
+    testResultsFiles: results.xml
+    searchFolder: '$(Build.SourcesDirectory)/Calculator'
+  condition: succeededOrFailed()
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - Robot Report'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/Calculator/report.html'
+    artifact: Report.html
+  condition: succeededOrFailed()
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - Robot Log'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/Calculator/log.html'
+    artifact: log.html
+  condition: succeededOrFailed()

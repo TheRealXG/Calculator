@@ -34,7 +34,9 @@
     - +:test/**
     - -:test/support
   :source:
-    - src/**
+    - gen/
+    - man/
+ #   - src/**
  #   - /rtems/quick-start/rtems/5/arm-rtems5/realview_pbx_a9_qemu/lib/include
   :support:
     - test/support
@@ -71,9 +73,8 @@
 # For more information on these options, see docs in plugins/gcov
 :gcov:
   :reports:
-    - HtmlDetailed
     - Cobertura
-    - SonarQube
+    - HtmlDetailed
   :gcovr:
     :html_medium_threshold: 75
     :html_high_threshold: 90

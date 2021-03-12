@@ -6,6 +6,10 @@ results.txt
 log.html
 report.html
 
+#Ceedling build files
+build/
+gcov/
+
 #WAF files
 .lock*
 build
