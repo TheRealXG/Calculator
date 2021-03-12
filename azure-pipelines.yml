@@ -51,6 +51,7 @@ steps:
       sonar.cfamily.cache.enabled=false
       sonar.cfamily.threads=2
       sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
+      sonar.cfamily.gcov.reportsPath=gcov/
 
 
 - script: |
