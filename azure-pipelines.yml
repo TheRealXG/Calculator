@@ -4,7 +4,7 @@ resources:
     type: github
     endpoint: TheRealXG
     name: therealxg/Calculator
-    ref: modular_pipeline
+    ref: master
 
 pool:
   name: Ubuntu 20.10 VM
