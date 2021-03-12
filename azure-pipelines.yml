@@ -7,7 +7,7 @@ resources:
     ref: master
 
 pool:
-  name: Ubuntu 20.10 VM
+  name: AzureVM
 steps:
 - checkout: XG_Github
 - checkout: git://Hardware Emulation/RTEMS@refs/tags/realview_pbx_a9_qemu_rtems_51
