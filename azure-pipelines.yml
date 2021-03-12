@@ -52,6 +52,7 @@ steps:
       sonar.cfamily.threads=2
       sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
       sonar.cfamily.gcov.reportsPath=gcov/
+      sonar.cfamily.cppunit.reportsPath=build/artifacts/gcov/report.xml
 
 
 - script: |
