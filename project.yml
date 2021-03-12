@@ -71,9 +71,8 @@
 # For more information on these options, see docs in plugins/gcov
 :gcov:
   :reports:
-    - HtmlDetailed
     - Cobertura
-    - SonarQube
+    - HtmlDetailed
   :gcovr:
     :html_medium_threshold: 75
     :html_high_threshold: 90
