@@ -73,7 +73,7 @@
 # For more information on these options, see docs in plugins/gcov
 :gcov:
   :reports:
-    - Cobertura
+#    - Cobertura
     - HtmlDetailed
   :gcovr:
     :html_medium_threshold: 75
