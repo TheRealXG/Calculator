@@ -34,7 +34,9 @@
     - +:test/**
     - -:test/support
   :source:
-    - src/**
+    - gen/
+    - man/
+ #   - src/**
  #   - /rtems/quick-start/rtems/5/arm-rtems5/realview_pbx_a9_qemu/lib/include
   :support:
     - test/support
