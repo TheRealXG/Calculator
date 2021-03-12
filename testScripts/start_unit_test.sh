@@ -22,7 +22,8 @@ done
 ceedling gcov:all utils:gcov
 
 #run gcov again... to get the .gcov files.....
-gcov -o build/gcov/out src/*.c
+gcov -o build/gcov/out gen/*.c
+gcov -o build/gcov/out man/*.c
 mkdir -p gcov
 mv *.gcov gcov
 
