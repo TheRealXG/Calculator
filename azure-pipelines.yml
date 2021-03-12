@@ -4,7 +4,7 @@ resources:
     type: github
     endpoint: TheRealXG
     name: therealxg/Calculator
-    ref: master
+    ref: unittest
 
 pool:
   name: AzureVM
