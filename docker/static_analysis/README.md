@@ -6,9 +6,9 @@ Download and install Docker on a development computer - [Get Docker](https://doc
 
 # Build and Run
 1.	In the same directory as the Dockerfile, execute the following:  
-	`docker build -t test_app .`  
+	`docker build -t static_analysis .`  
 2.	Then launch the container with:  
-	`docker run -ti --rm -v SRC_VOL:/volume test_app /bin/bash`
+	`docker run -ti --rm -v SRC_VOL:/volume static_analysis /bin/bash`
   
 # More Information
 Docker run flags used: 
