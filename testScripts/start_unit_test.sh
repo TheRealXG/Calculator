@@ -21,4 +21,9 @@ done
 #run Ceedling
 ceedling gcov:all utils:gcov
 
+#run gcov again... to get the .gcov files.....
+gcov -o build/gcov/out src/*.c
+mkdir -p gcov
+mv *.gcov gcov
+
 echo "start_unit_test.sh scrip was run." >> $SRC_VOL/ut_log.txt
