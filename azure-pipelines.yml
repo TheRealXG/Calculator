@@ -46,7 +46,6 @@ steps:
       # Additional properties that will be passed to the scanner, 
       # Put one key=value per line, example:
       # sonar.exclusions=**/*.bin
-      sonar.tests=test
       sonar.cfamily.build-wrapper-output=Calculator/build_wrapper_output_directory
       sonar.sourceEncoding=UTF-8
       sonar.cfamily.cache.enabled=false
