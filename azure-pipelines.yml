@@ -7,7 +7,8 @@ resources:
     ref: master
 
 pool:
-  name: AzureVM
+#  name: AzureVM
+  name: Ubuntu 20.10 VM
 steps:
 - checkout: XG_Github
 - checkout: git://Hardware Emulation/RTEMS@refs/tags/realview_pbx_a9_qemu_rtems_51
@@ -51,6 +52,7 @@ steps:
       sonar.cfamily.cache.enabled=false
       sonar.cfamily.threads=2
       sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
+      sonar.tests=test
       sonar.cfamily.gcov.reportsPath=gcov/
       sonar.cfamily.cppunit.reportsPath=build/artifacts/gcov/
 
