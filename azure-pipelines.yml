@@ -54,7 +54,8 @@ steps:
       sonar.projectBaseDir=$(Build.SourcesDirectory)/Calculator
       sonar.tests=test
       sonar.cfamily.gcov.reportsPath=gcov/
-      sonar.cfamily.cppunit.reportsPath=build/artifacts/gcov/
+      sonar.cs.xunit.reportsPaths=build/artifacts/gcov/
+      # sonar.cfamily.cppunit.reportsPath=build/artifacts/gcov/
 
 
 - script: |
