@@ -11,6 +11,7 @@ pool:
   name: Ubuntu 20.10 VM
 steps:
 - checkout: XG_Github
+  clean: true
 - checkout: git://Hardware Emulation/RTEMS@refs/tags/realview_pbx_a9_qemu_rtems_51
 
 - task: DockerInstaller@0
