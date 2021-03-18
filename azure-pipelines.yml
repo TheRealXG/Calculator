@@ -57,19 +57,6 @@ steps:
       sonar.cfamily.gcov.reportsPath=gcov/
       sonar.cfamily.cppunit.reportsPath=build/artifacts/gcov/
 
-
-- script: |
-   docker pull therealxg/azure_pipeline:unity
-   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:unity
-  displayName: 'Launch Docker Unit Test Container'
-
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish Pipeline Artifact - Unit Test Results'
-  inputs:
-    targetPath: '$(Build.SourcesDirectory)/Calculator/build/artifacts/gcov/report.xml'
-    artifact: report.xml
-  condition: succeededOrFailed()
-
 - script: |
    docker pull therealxg/azure_pipeline:static_analysis
    docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:static_analysis
@@ -87,6 +74,18 @@ steps:
   inputs:
     targetPath: '$(Build.SourcesDirectory)/Calculator/flawfinder_log.txt'
     artifact: flawfinder_log.txt
+  condition: succeededOrFailed()
+
+- script: |
+   docker pull therealxg/azure_pipeline:unity
+   docker run --user $(id -u):$(id -g) --rm -e SRC_VOL=$(Build.SourcesDirectory)/Calculator -v $(Build.SourcesDirectory)/Calculator:$(Build.SourcesDirectory)/Calculator therealxg/azure_pipeline:unity
+  displayName: 'Launch Docker Unit Test Container'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact - Unit Test Results'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)/Calculator/build/artifacts/gcov/report.xml'
+    artifact: report.xml
   condition: succeededOrFailed()
 
 - script: |
