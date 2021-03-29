@@ -19,7 +19,7 @@ void test_adding_function_adds(void)
 {
     kcg_float32 val1 = 1;
     kcg_float32 val2 = 8;
-    kcg_float32 expected = 6;
+    kcg_float32 expected = 9;
     kcg_int32 function = KEY_13_PLUS_Calc;
     kcg_float32 actual;
     
