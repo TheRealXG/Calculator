@@ -95,6 +95,30 @@ class CalculatorLibrary(object):
             else:
                 print(output.strip())
 
+    def get_display(self):
+        """Gets the value most recently output as the Display value from the Calculator. If this is run, then the "result_should_be" cannot be run after this.
+        
+        Example:
+        | Get Display |
+        """
+        wait_for_prompt = True
+        while wait_for_prompt:
+            output = self.process.stdout.readline()
+
+            if self.prompt_display in output:
+                print(output.strip())
+                # Parse output on spaces to get final entry in line
+                output_parsed = output.split()
+                # Get last element in list and remove "." from end
+                self._result = str(output_parsed[-1])
+		return self._result
+            # Check for Invalid Input error
+            elif self.bad_input in output:
+                print(output.strip())
+                raise AssertionError('Bad Input')
+            else:
+                print(output.strip())
+
     def should_cause_error(self, expression):
         """Verifies that calculating the given ``expression`` causes an error.
 
