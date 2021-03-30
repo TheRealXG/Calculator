@@ -94,7 +94,7 @@ class CalculatorLibrary(object):
                 raise AssertionError('Bad Input')
             else:
                 print(output.strip())
-
+                
     def get_display(self):
         """Gets the value most recently output as the Display value from the Calculator. If this is run, then the "result_should_be" cannot be run after this.
         
@@ -111,7 +111,7 @@ class CalculatorLibrary(object):
                 output_parsed = output.split()
                 # Get last element in list and remove "." from end
                 self._result = str(output_parsed[-1])
-		return self._result
+                return self._result
             # Check for Invalid Input error
             elif self.bad_input in output:
                 print(output.strip())
