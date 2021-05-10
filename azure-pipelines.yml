@@ -7,8 +7,8 @@ resources:
     ref: master
 
 pool:
-  name: AzureVM
-#  name: Ubuntu 20.10 VM
+#  name: AzureVM
+  name: Ubuntu 20.10 VM
 steps:
 - checkout: XG_Github
   clean: true
