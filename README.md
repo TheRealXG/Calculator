@@ -57,19 +57,20 @@ This uses the [RTEMS Quick Start guide](https://docs.rtems.org/branches/master/u
 	(Assuming Python 3 is already installed)  
 	`pip3 install robotframework`  
 	`pip3 install docutils`  
-2. In the main Calculator folder execute  
+2. Due to how pipeline runs are setup for this, Robot is looking for `calc.exe` in the top level folder. Either copy `build/arm-rtems6-realview_pbx_a9_qemu/rtems/calc.exe` to the top level Calculator folder or in `testScripts/CaluclatorLibrary.py` change this line `qemu_cmd = shlex.split("qemu-system-arm -net none -no-reboot -nographic -monitor none -serial stdio -M realview-pbx-a9 -m 256M -kernel calc.exe")` to have the full path to the `calc.exe` file.  
+3. In the main Calculator folder execute  
 	`robot testScripts/keyword_driven.robot`  
 	This will run 7 basic test cases (4P/3F) and report the results to the command line. Test details can be viewed by opening `log.html`  
-3. To execute all Robot tests in the folder run  
+4. To execute all Robot tests in the folder run  
 	`robot testScripts/.`  
-4. For Data Driven tests, first run  
+5. For Data Driven tests, first run  
 	`pip3 install --upgrade robotframework-datadriver`  
 	`robot testScripts/data_driver.robot`  
 	This will execute a test that reads in a CSV of expressions to test `data_driver.csv`  
 	Expressions can be entered on a new line with the first entry being the input expression then the expected output.  
-5. To generate XUnit XML output in results.xml, run  
+6. To generate XUnit XML output in results.xml, run  
 	`robot --xunit results testScripts/.`
-6. More tests and development is in work on this testing framework
+7. More tests and development is in work on this testing framework
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better.  
