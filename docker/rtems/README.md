@@ -43,8 +43,32 @@ Then, run the following Docker command to include the LIBBSD networking library.
 
 ## Copy out the RTEMS build libraries
 If you wish to copy out the RTEMS build libraries from the container for use in other applications, such as a static analysis tool, the following command can be executed to copy the `rtems/6` folder into the current directory.  
-`docker run -it --rm -v "$(pwd)":/src rtems-arm-6 cp -r /development/rtems/ .`
+`docker run -it --rm -v "$(pwd)":/src rtems-arm-6 cp -r /development/rtems/ .`  
 
+## Use in Gitlab CI Pipeline
+If you wish to use this in a Gitlab CI Pipeline defined by YAML, you can use this as the job container image (Docker or Kubernetes executor) but the ENTRYPOINT will not be executed, so the entrypoint script will need explicitly called. Additionally, 1-2 variables will need set to provide correct directories to the script. To call the image and have a blank entrypoin, for the applicable job add:
+```
+image:
+    name: registry.gitlab.com/therealxg/calculator/modular_pipeline:rtems_6_build_ubi8-2
+    entrypoint: [""]
+```  
+Then, use the script command with several additional commands. This sets the Source code Directory, the image will assume it is mapped to `/src`, as above, if nothing is specified, but Gitlab will not allow the Git repo to be checked out to that location, so the Gitlab repository checkout location is set. Then the `config_compile.sh` scripe is called explicitly, followed by the build command. The final command copies out the build executable to the top level directory for use by later testing jobs, artifact saving, etc.  
+```
+script:
+    - echo "Run build container"
+    - export SRCDIR=$CI_BUILDS_DIR/$CI_PROJECT_PATH
+    - /usr/local/bin/config_compile.sh
+    - ./waf clean build
+    - cp build/*/rtems/*.exe .
+```
+If you wish to use the RTEMS build libraries in later jobs, e.g. SonarCloud requires them, you can add several more steps to the script command above.  
+```
+    - mkdir -p $CI_BUILDS_DIR/$CI_PROJECT_PATH/rtems
+    - cp -r /development/rtems/. $CI_BUILDS_DIR/$CI_PROJECT_PATH/rtems
+    - export PREFIXDIR=/builds/therealxg/Calculator/rtems
+    - build-wrapper/build-wrapper-linux-x86-64 --out-dir bw-output ./waf clean build
+```  
+This creates a path in the top level directory that can be replicated in the Sonar Cloud image to keep absolute paths the same between the build and analyze stage. Then the internal RTEMS build libraries from the container are copied there and that set as the RTEMS configure PREFIX directory. Finally, for Sonar Cloud specifically, the `./waf clean build` command is preceded by the build wrapper (Sonar Cloud would have set this up in a previous stage).  
 
  
 
